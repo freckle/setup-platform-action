@@ -1,0 +1,14 @@
+name: Platform
+description: Run Freckle Platform commands
+inputs:
+  run:
+    description: Script to run
+    required: true
+outputs: {}
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - sh
+    - -c
+    - ${{ inputs.run }}
