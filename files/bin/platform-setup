@@ -1,8 +1,8 @@
 #!/bin/sh
 set -eu
 
-token=${GITHUB_TOKEN:-${ACTIONS_RUNTIME_TOKEN:-""}}
-release="${1:-""}"
+token=${GITHUB_TOKEN:-""}
+release=${1:-""}
 
 if [ -z "$token" ]; then
   cat >&2 <<EOM

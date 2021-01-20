@@ -1,6 +1,9 @@
 name: Platform
 description: Run Freckle Platform commands
 inputs:
+  github_token:
+    description: Personal Access Token to download the platform CLI asset
+    required: true
   run:
     description: Script to run
     required: true
@@ -8,6 +11,8 @@ outputs: {}
 runs:
   using: 'docker'
   image: 'Dockerfile'
+  env:
+    GITHUB_TOKEN: ${{ inputs.token }}
   args:
     - sh
     - -c
