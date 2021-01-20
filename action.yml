@@ -11,9 +11,8 @@ outputs: {}
 runs:
   using: 'docker'
   image: 'Dockerfile'
-  env:
-    GITHUB_TOKEN: ${{ inputs.token }}
   args:
-    - sh
+    - -t
+    - ${{ inputs.token }}
     - -c
     - ${{ inputs.run }}
