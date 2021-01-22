@@ -1,4 +1,4 @@
-# Platform Action
+# Setup Platform Action
 
 GitHub Action to install the [Freckle Platform CLI][platform].
 
@@ -37,9 +37,11 @@ jobs:
 
 ## Inputs
 
-- `version`: the version of Platform CLI to install
+- `version`: the version of Platform CLI to install.
 
-  Defaults to `latest`.
+  See its [releases][] for available versions. Defaults to `latest`.
+
+  [releases]: https://github.com/freckle/platform/releases
 
 - `suffix`: artifact suffix to use
 
