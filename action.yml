@@ -30,13 +30,13 @@ runs:
           exit 1
         fi
 
-        check_bin pip3
+        check_bin pip
         check_bin curl
         check_bin unzip
 
     - name: Install cfn-flip
       shell: bash
-      run: pip3 install setuptools cfn-flip
+      run: pip install cfn-flip
 
     - name: Install cloudformation/rain
       shell: bash
