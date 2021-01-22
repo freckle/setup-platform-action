@@ -36,7 +36,7 @@ runs:
 
     - name: Install cfn-flip
       shell: bash
-      run: pip3 install cfn-flip
+      run: pip3 install setuptools cfn-flip
 
     - name: Install cloudformation/rain
       shell: bash
