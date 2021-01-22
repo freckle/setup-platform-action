@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+#
+# Adaptation of https://gist.github.com/josh-padnick/fdae42c07e648c798fc27dec2367da21
+#
+#
+##
+set -euo pipefail
+
+release=$1
+artifact=$2
+repo=$3
+
+if [[ "$release" == latest ]]; then
+  path=/latest
+else
+  path=/tags/$release
+fi
+
+curl_() {
+  curl \
+    --silent \
+    --fail \
+    --show-error \
+    --location \
+    --header "Authorization: token $GITHUB_TOKEN" \
+    "$@"
+}
+
+asset_url=$(
+  curl_ "https://api.github.com/repos/$repo/releases$path" |
+    jq --raw-output ".assets[] | select(.name == \"$artifact\").url"
+)
+
+if [[ -z "$asset_url" ]]; then
+  echo "Artifact with name $artifact not present in Release $repo-$release" >&2
+  exit 1
+fi
+
+curl_ --header "Accept: application/octet-stream" --output "$artifact" "$asset_url"

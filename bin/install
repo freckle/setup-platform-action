@@ -69,6 +69,9 @@ check_bin pip
 check_bin curl
 check_bin unzip
 
+# Store current directory
+bin=$(cd "$(dirname "$0")" && pwd)
+
 # Do all work in a temporary directory
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
@@ -91,23 +94,6 @@ if ! check_bin rain; then
   $sudo_cmd cp -v ./rain-v1.1.1_linux-amd64/rain "$prefix/bin/rain"
 fi
 
-if ! check_bin ghrd; then
-  curl \
-    --silent \
-    --fail \
-    --show-error \
-    --location \
-    --remote-name \
-    "https://github.com/zero88/gh-release-downloader/releases/download/v1.1.1/ghrd"
-  chmod +x ./ghrd
-  $sudo_cmd cp -v ./ghrd "$prefix/bin/ghrd"
-fi
-
-ghrd \
-  --release "$version" \
-  --artifact "platform-$suffix.tar.gz" \
-  --output "$PWD" \
-  --pat "$GITHUB_TOKEN" \
-  freckle/platform
+"$bin"/ghrd "$version" "platform-$suffix.tar.gz" freckle/platform
 tar xzvf ./"platform-$suffix.tar.gz"
 cd ./platform && $sudo_cmd make install "PREFIX=$prefix"
