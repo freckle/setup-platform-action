@@ -1,19 +1,56 @@
-name: Platform
+name: Platform setup
 description: Run Freckle Platform commands
 inputs:
   github_token:
     description: Personal Access Token to download the platform CLI asset
     required: true
-  run:
-    description: Script to run
+  version:
+    description: Version of Platform CLI to install
     required: true
+    default: latest
+  suffix:
+    description: OS-specific suffix for Platform package archive
+    require: true
+    default: x86_64-linux
 outputs: {}
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
-  env:
-    GITHUB_TOKEN: ${{ inputs.github_token }}
-  args:
-    - sh
-    - -c
-    - ${{ inputs.run }}
+  using: composite
+  steps:
+    - name: Install cfn-flip
+      run: pip3 install cfn-flip
+    - name: Install cloudformation/rain
+      working-directory: /tmp
+      run: |
+        set -e
+        curl \
+          --silent \
+          --fail \
+          --show-error \
+          --location \
+          --remote-name \
+          "https://github.com/aws-cloudformation/rain/releases/download/v1.1.1/rain-v1.1.1_linux-amd64.zip"
+        unzip rain-v1.1.1_linux-amd64.zip
+        cp ./rain-v1.1.1_linux-amd64/rain /bin/rain
+    - name: Install ghrd
+      run: |
+        set -e
+        curl \
+          --silent \
+          --fail \
+          --show-error \
+          --location \
+          --output /bin/ghrd \
+          "https://github.com/zero88/gh-release-downloader/releases/download/v1.1.1/ghrd"
+        chmod +x /bin/ghrd
+    - name: Install Platform
+      working-directory: /tmp
+      run: |
+        set -e
+        ghrd \
+          --release "${{ inputs.version }}" \
+          --artifact "platform-${{ inputs.suffix }}.tar.gz" \
+          --output "$PWD" \
+          --pat "$${{ inputs.github_token }}" \
+          freckle/platform
+        tar xzvf ./"platform-${{ inputs.suffix }}.tar.gz"
+        cd ./platform && make install
