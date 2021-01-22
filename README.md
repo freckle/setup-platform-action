@@ -28,7 +28,7 @@ jobs:
 
 ## Environment
 
-- `AWS_*`: AWS configuration for the target environment
+- `AWS_*`: AWS configuration for the target account
 - `GITHUB_TOKEN`: personal access token with `repos` scope
 
   Used to download the CLI installation asset from the `freckle/platform`
