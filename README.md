@@ -21,7 +21,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: freckle/platform-action@main
+      - uses: actions/setup-python@v2
+      - uses: freckle/setup-platform-action@main
       - run: platform container:login
       - run: platform container:push --tag ${{ github.sha }}
 ```
