@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  cat <<EOM
+Usage: install [-v RELEASE] [-s SUFFIX] [-p PREFIX] [-Sh]
+Install Platform CLI and supporting tools
+
+Options:
+  -v RELEASE    Release tag to get artifacts from (default: latest)
+  -s SUFFIX     Artifact suffix to search for (default: x86_64-linux)
+  -p PREFIX     Install tools and CLI into PREFIX (default: empty)
+  -S            Use sudo for installation commands
+
+Environment:
+  GITHUB_TOKEN  Access token with rights to download Platform CLI artifacts
+
+EOM
+}
+
+check_bin() {
+  local bin=$1
+
+  if ! command -v "$bin" &>/dev/null; then
+    echo "$bin not available on $PATH" >&2
+    return 1
+  fi
+
+  return 0
+}
+
+version=latest
+suffix=x86_64-linux
+prefix=
+sudo_cmd=
+
+while getopts v:s:p:Sh opt; do
+  case "$opt" in
+    v)
+      version=$OPTARG
+      ;;
+    s)
+      suffix=$OPTARG
+      ;;
+    p)
+      prefix=$OPTARG
+      ;;
+    S)
+      sudo_cmd=sudo
+      ;;
+    h)
+      usage
+      exit 0
+      ;;
+    \?)
+      usage >&2
+      exit 64
+      ;;
+  esac
+done
+shift $((OPTIND - 1))
+
+if [[ -z "$GITHUB_TOKEN" ]]; then
+  echo "GITHUB_TOKEN not set" >&2
+  exit 1
+fi
+
+check_bin pip
+check_bin curl
+check_bin unzip
+
+# Do all work in a temporary directory
+tmp=$(mktemp -d)
+trap 'rm -rf "$tmp"' EXIT
+cd "$tmp"
+
+if ! check_bin cfn-flip; then
+  # Always a user-installation
+  pip install cfn-flip
+fi
+
+if ! check_bin rain; then
+  curl \
+    --silent \
+    --fail \
+    --show-error \
+    --location \
+    --remote-name \
+    "https://github.com/aws-cloudformation/rain/releases/download/v1.1.1/rain-v1.1.1_linux-amd64.zip"
+  unzip rain-v1.1.1_linux-amd64.zip
+  $sudo_cmd cp -v ./rain-v1.1.1_linux-amd64/rain "$prefix/bin/rain"
+fi
+
+if ! check_bin ghrd; then
+  curl \
+    --silent \
+    --fail \
+    --show-error \
+    --location \
+    --remote-name \
+    "https://github.com/zero88/gh-release-downloader/releases/download/v1.1.1/ghrd"
+  chmod +x ./ghrd
+  $sudo_cmd cp -v ./ghrd "$prefix/bin/ghrd"
+fi
+
+ghrd \
+  --release "$version" \
+  --artifact "platform-$suffix.tar.gz" \
+  --output "$PWD" \
+  --pat "$GITHUB_TOKEN" \
+  freckle/platform
+tar xzvf ./"platform-$suffix.tar.gz"
+cd ./platform && $sudo_cmd make install "PREFIX=$prefix"

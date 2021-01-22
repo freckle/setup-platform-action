@@ -13,68 +13,8 @@ outputs: {}
 runs:
   using: composite
   steps:
-    - name: Prerequisites check
-      shell: bash
-      run: |
-        check_bin() {
-          local bin=$1
-
-          if ! command -v "$bin" >/dev/null; then
-            echo "$bin not available on $PATH" >&2
-            exit 1
-          fi
-        }
-
-        if [ -z "$GITHUB_TOKEN" ]; then
-          echo "GITHUB_TOKEN not set" >&2
-          exit 1
-        fi
-
-        check_bin pip
-        check_bin curl
-        check_bin unzip
-
-    - name: Install cfn-flip
-      shell: bash
-      run: pip install cfn-flip
-
-    - name: Install cloudformation/rain
-      shell: bash
-      working-directory: /tmp
-      run: |
-        curl \
-          --silent \
-          --fail \
-          --show-error \
-          --location \
-          --remote-name \
-          "https://github.com/aws-cloudformation/rain/releases/download/v1.1.1/rain-v1.1.1_linux-amd64.zip"
-        unzip rain-v1.1.1_linux-amd64.zip
-        sudo cp -v ./rain-v1.1.1_linux-amd64/rain /bin/rain
-
-    - name: Install ghrd
-      shell: bash
-      working-directory: /tmp
-      run: |
-        curl \
-          --silent \
-          --fail \
-          --show-error \
-          --location \
-          --remote-name \
-          "https://github.com/zero88/gh-release-downloader/releases/download/v1.1.1/ghrd"
-        chmod +x ./ghrd
-        sudo cp -v ./ghrd /bin/ghrd
-
-    - name: Install Platform
-      shell: bash
-      working-directory: /tmp
-      run: |
-        ghrd \
-          --release "${{ inputs.version }}" \
-          --artifact "platform-${{ inputs.suffix }}.tar.gz" \
-          --output "$PWD" \
-          --pat "$GITHUB_TOKEN" \
-          freckle/platform
-        tar xzvf ./"platform-${{ inputs.suffix }}.tar.gz"
-        cd ./platform && sudo make install
+    - run: |
+        ${{ github.action_path }}/bin/install \
+          -v "${{ inputs.version }}" \
+          -s "${{ inputs.suffix }}" \
+          -S
