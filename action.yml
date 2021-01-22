@@ -1,9 +1,6 @@
 name: Platform setup
-description: Run Freckle Platform commands
+description: Install Freckle Platform CLI
 inputs:
-  github_token:
-    description: Personal Access Token to download the platform CLI asset
-    required: true
   version:
     description: Version of Platform CLI to install
     required: true
@@ -16,12 +13,35 @@ outputs: {}
 runs:
   using: composite
   steps:
+    - name: Prerequisites check
+      shell: bash
+      run: |
+        check_bin() {
+          local bin=$1
+
+          if ! command -v "$bin" >/dev/null; then
+            echo "$bin not available on $PATH" >&2
+            exit 1
+          fi
+        }
+
+        if [ -z "$GITHUB_TOKEN" ]; then
+          echo "GITHUB_TOKEN not set" >&2
+          exit 1
+        fi
+
+        check_bin pip3
+        check_bin curl
+        check_bin unzip
+
     - name: Install cfn-flip
+      shell: bash
       run: pip3 install cfn-flip
+
     - name: Install cloudformation/rain
+      shell: bash
       working-directory: /tmp
       run: |
-        set -e
         curl \
           --silent \
           --fail \
@@ -31,9 +51,10 @@ runs:
           "https://github.com/aws-cloudformation/rain/releases/download/v1.1.1/rain-v1.1.1_linux-amd64.zip"
         unzip rain-v1.1.1_linux-amd64.zip
         cp ./rain-v1.1.1_linux-amd64/rain /bin/rain
+
     - name: Install ghrd
+      shell: bash
       run: |
-        set -e
         curl \
           --silent \
           --fail \
@@ -42,15 +63,16 @@ runs:
           --output /bin/ghrd \
           "https://github.com/zero88/gh-release-downloader/releases/download/v1.1.1/ghrd"
         chmod +x /bin/ghrd
+
     - name: Install Platform
+      shell: bash
       working-directory: /tmp
       run: |
-        set -e
         ghrd \
           --release "${{ inputs.version }}" \
           --artifact "platform-${{ inputs.suffix }}.tar.gz" \
           --output "$PWD" \
-          --pat "$${{ inputs.github_token }}" \
+          --pat "$GITHUB_TOKEN" \
           freckle/platform
         tar xzvf ./"platform-${{ inputs.suffix }}.tar.gz"
         cd ./platform && make install

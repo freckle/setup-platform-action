@@ -1,8 +1,8 @@
 # Platform Action
 
-GitHub Action to use our [Platform CLI][].
+GitHub Action to install the [Freckle Platform CLI][platform].
 
-[platform cli]: https://github.com/freckle/platform
+[platform]: https://github.com/freckle/platform
 
 **NOTE**: This action is public so that we can use it outside of its own
 repository, but the tooling it installs and uses is private. It is of no use
@@ -10,11 +10,40 @@ outside Freckle.
 
 ## Usage
 
-TODO
+```yaml
+jobs:
+  image:
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: us-east-1
+      GITHUB_TOKEN: ${{ secrets.REPOS_ACCESS_TOKEN }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: freckle/platform-action@main
+      - run: platform container:login
+      - run: platform container:push --tag ${{ github.sha }}
+```
 
-## Versioning
+## Environment
 
-TODO: discuss `PLATFORM_VERSION` and keeping action versions in sync.
+- `AWS_*`: AWS configuration for the target environment
+- `GITHUB_TOKEN`: personal access token with `repos` scope
+
+  Used to download the CLI installation asset from the `freckle/platform`
+  releases. **NOTE**: this cannot be the usual `secrets.GITHUB_TOKEN`, which
+  only has rights to the repository on which you are building.
+
+## Inputs
+
+- `version`: the version of Platform CLI to install
+
+  Defaults to `latest`.
+
+- `suffix`: artifact suffix to use
+
+  Must be `x86_64-linux` or `x86_64-osx`. Defaults to `x86_64-linux`.
 
 ---
 
