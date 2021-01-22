@@ -7,15 +7,30 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN \
   apt-get update -y && \
   apt-get install --no-install-recommends -y \
+    apt-transport-https \
     awscli \
     ca-certificates \
     curl \
+    gnupg-agent \
     jq \
     make \
     python3 \
     python3-pip \
     python3-setuptools \
+    software-properties-common \
     unzip && \
+  rm -rf /var/lib/apt/lists/*
+
+# Docker
+RUN \
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
+  add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable" && \
+  apt-get update -y && \
+  apt-get install --no-install-recommends -y \
+    docker-ce-cli && \
   rm -rf /var/lib/apt/lists/*
 
 # For converting Stack templates between JSON and Yaml
