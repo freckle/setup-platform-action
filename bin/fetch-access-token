@@ -1,0 +1,43 @@
+#!/bin/sh
+#
+# Fetch a GitHub Access Token for installing the Platform CLI assets via SSM,
+# handling cross-account access if necessary.
+#
+###
+set -eu
+
+get_token() {
+  aws ssm get-parameter \
+    --name /github/setup-platform-token \
+    --query 'Parameter.Value' \
+    --output text
+}
+
+if get_token 2>/dev/null; then
+  exit 0
+fi
+
+if [ -z "${FRECKLE_DEV_CROSS_ACCOUNT_ARN:-}" ]; then
+  # Just call it again so its own error output and exit code can show
+  get_token
+fi
+
+echo "SSM Parameter not found, trying dev-cross-account" >&2
+tmp=$(mktemp)
+trap 'rm -rf "$tmp"' EXIT
+
+aws sts assume-role \
+  --role-arn "$FRECKLE_DEV_CROSS_ACCOUNT_ARN" \
+  --role-session-name setup-platform-action \
+  --query 'Credentials' \
+  --output json >"$tmp"
+
+AWS_ACCESS_KEY_ID=$(jq --raw-output '.AccessKeyId' <"$tmp")
+AWS_SECRET_ACCESS_KEY=$(jq --raw-output '.SecretAccessKey' <"$tmp")
+AWS_SESSION_TOKEN=$(jq --raw-output '.SessionToken' <"$tmp")
+
+export AWS_ACCESS_KEY_ID
+export AWS_SECRET_ACCESS_KEY
+export AWS_SESSION_TOKEN
+
+get_token

@@ -17,7 +17,6 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_DEFAULT_REGION: us-east-1
-      GITHUB_TOKEN: ${{ secrets.REPOS_ACCESS_TOKEN }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -30,11 +29,6 @@ jobs:
 ## Environment
 
 - `AWS_*`: AWS configuration for the target account
-- `GITHUB_TOKEN`: personal access token with `repos` scope
-
-  Used to download the CLI installation asset from the `freckle/platform`
-  releases. **NOTE**: this cannot be the usual `secrets.GITHUB_TOKEN`, which
-  only has rights to the repository on which you are building.
 
 ## Inputs
 
@@ -47,6 +41,20 @@ jobs:
 - `suffix`: artifact suffix to use
 
   Must be `x86_64-linux` or `x86_64-osx`. Defaults to `x86_64-linux`.
+
+## Cross-account access
+
+If running this in the context of our Dev AWS account (i.e. a CI Job that
+deploys to a development environment), you need an additional environment
+variable, which you can get from an Org-level Secret:
+
+```yaml
+env:
+  FRECKLE_DEV_CROSS_ACCOUNT_ARN: ${{ secrets.FRECKLE_DEV_CROSS_ACCOUNT_ARN }}
+```
+
+This will allow setup to assume a Production role in order to access a GitHub
+Access Token (required to install Platform CLI assets) via SSM.
 
 ---
 

@@ -13,7 +13,9 @@ Options:
   -S            Use sudo for installation commands
 
 Environment:
-  GITHUB_TOKEN  Access token with rights to download Platform CLI artifacts
+  FRECKLE_DEV_CROSS_ACCOUNT_ARN
+                The Arn of our dev-cross-account-access role, if installing in
+                the context of our Dev account.
 
 EOM
 }
@@ -60,13 +62,10 @@ while getopts v:s:p:Sh opt; do
 done
 shift $((OPTIND - 1))
 
-if [[ -z "$GITHUB_TOKEN" ]]; then
-  echo "GITHUB_TOKEN not set" >&2
-  exit 1
-fi
-
-check_bin pip
+check_bin aws
 check_bin curl
+check_bin jq
+check_bin pip
 check_bin unzip
 
 # Store current directory
@@ -93,6 +92,9 @@ if ! check_bin rain; then
   unzip rain-v1.1.1_linux-amd64.zip
   $sudo_cmd cp -v ./rain-v1.1.1_linux-amd64/rain "$prefix/bin/rain"
 fi
+
+GITHUB_TOKEN=$("$bin"/fetch-access-token)
+export GITHUB_TOKEN
 
 "$bin"/ghrd "$version" "platform-$suffix.tar.gz" freckle/platform
 tar xzvf ./"platform-$suffix.tar.gz"
