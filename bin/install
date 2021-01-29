@@ -76,18 +76,6 @@ if ! check_bin cfn-flip; then
   pip install cfn-flip
 fi
 
-if ! check_bin rain; then
-  curl \
-    --silent \
-    --fail \
-    --show-error \
-    --location \
-    --remote-name \
-    "https://github.com/aws-cloudformation/rain/releases/download/v1.1.1/rain-v1.1.1_linux-amd64.zip"
-  unzip rain-v1.1.1_linux-amd64.zip
-  $sudo_cmd cp -v ./rain-v1.1.1_linux-amd64/rain "$prefix/bin/rain"
-fi
-
 GITHUB_TOKEN=$(
   aws ssm get-parameter \
     --name /github/setup-platform-token \
