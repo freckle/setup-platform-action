@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 #
-# Adaptation of https://gist.github.com/josh-padnick/fdae42c07e648c798fc27dec2367da21
+# Find and download a Release Asset on a private repository.
 #
+# Based loosely on https://gist.github.com/josh-padnick/fdae42c07e648c798fc27dec2367da21
 #
 ##
 set -euo pipefail
