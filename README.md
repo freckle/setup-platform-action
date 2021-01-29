@@ -42,20 +42,6 @@ jobs:
 
   Must be `x86_64-linux` or `x86_64-osx`. Defaults to `x86_64-linux`.
 
-## Cross-account access
-
-If running this in the context of our Dev AWS account (i.e. a CI Job that
-deploys to a development environment), you need an additional environment
-variable, which you can get from an Org-level Secret:
-
-```yaml
-env:
-  FRECKLE_DEV_CROSS_ACCOUNT_ARN: ${{ secrets.FRECKLE_DEV_CROSS_ACCOUNT_ARN }}
-```
-
-This will allow setup to assume a Production role in order to access a GitHub
-Access Token (required to install Platform CLI assets) via SSM.
-
 ---
 
 [LICENSE](./LICENSE)

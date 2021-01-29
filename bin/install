@@ -12,11 +12,6 @@ Options:
   -p PREFIX     Install tools and CLI into PREFIX (default: empty)
   -S            Use sudo for installation commands
 
-Environment:
-  FRECKLE_DEV_CROSS_ACCOUNT_ARN
-                The Arn of our dev-cross-account-access role, if installing in
-                the context of our Dev account.
-
 EOM
 }
 
@@ -93,7 +88,12 @@ if ! check_bin rain; then
   $sudo_cmd cp -v ./rain-v1.1.1_linux-amd64/rain "$prefix/bin/rain"
 fi
 
-GITHUB_TOKEN=$("$bin"/fetch-access-token)
+GITHUB_TOKEN=$(
+  aws ssm get-parameter \
+    --name /github/setup-platform-token \
+    --query 'Parameter.Value' \
+    --output text
+)
 export GITHUB_TOKEN
 
 "$bin"/ghrd "$version" "platform-$suffix.tar.gz" freckle/platform
