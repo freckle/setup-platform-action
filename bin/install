@@ -84,6 +84,8 @@ GITHUB_TOKEN=$(
 )
 export GITHUB_TOKEN
 
+echo "Installing version=$version, archive=platform-$suffix.tar.gz"
+
 "$bin"/ghrd "$version" "platform-$suffix.tar.gz" freckle/platform
 tar xzvf ./"platform-$suffix.tar.gz"
 cd ./platform && $sudo_cmd make install "PREFIX=$prefix"
