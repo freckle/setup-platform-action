@@ -13,6 +13,8 @@ outputs: {}
 runs:
   using: composite
   steps:
+    # Needed so we can install cfn-flip
+    - uses: actions/setup-python@v2
     - shell: bash
       run: |
         ${{ github.action_path }}/bin/install \
