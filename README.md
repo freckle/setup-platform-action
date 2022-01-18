@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: freckle/setup-platform-action@main
+      - uses: freckle/setup-platform-action@v4
       - run: platform container:login
       - run: platform container:push --tag ${{ github.sha }}
 ```
