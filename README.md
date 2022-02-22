@@ -13,21 +13,15 @@ outside Freckle.
 ```yaml
 jobs:
   image:
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_DEFAULT_REGION: us-east-1
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: freckle/setup-platform-action@v4
+      - uses: freckle/setup-platform-action@v5
+        with:
+          token: ${{ secrets.X }}
       - run: platform container:login
       - run: platform container:push --tag ${{ github.sha }}
 ```
-
-## Environment
-
-- `AWS_*`: AWS configuration for the target account
 
 ## Inputs
 
@@ -40,6 +34,9 @@ jobs:
 - `suffix`: artifact suffix to use
 
   Must be `x86_64-linux` or `x86_64-osx`. Defaults to `x86_64-linux`.
+
+- `token`: a GitHub token with access to download artifacts from the private
+  `freckle/platform` repository.
 
 ---
 
