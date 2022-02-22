@@ -15,6 +15,10 @@ jobs:
       fail-fast: false
 
     runs-on: ${{ matrix.runner }}
+    env:
+      # Dummy env so the CLI doesn't fail on initialization
+      AWS_ACCESS_KEY_ID: x
+      AWS_SECRET_ACCESS_KEY: x
 
     steps:
       - uses: actions/checkout@v2
@@ -26,6 +30,11 @@ jobs:
 
   test-version-input:
     runs-on: ubuntu-latest
+    env:
+      # Dummy env so the CLI doesn't fail on initialization
+      AWS_ACCESS_KEY_ID: x
+      AWS_SECRET_ACCESS_KEY: x
+
     steps:
       - uses: actions/checkout@v2
       - uses: ./
@@ -40,6 +49,11 @@ jobs:
 
   test-version-inferred:
     runs-on: ubuntu-latest
+    env:
+      # Dummy env so the CLI doesn't fail on initialization
+      AWS_ACCESS_KEY_ID: x
+      AWS_SECRET_ACCESS_KEY: x
+
     steps:
       - uses: actions/checkout@v2
       - run: |
