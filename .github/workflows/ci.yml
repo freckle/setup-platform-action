@@ -16,4 +16,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: ./
+        with:
+          token: ${{ secrets.FRECKLE_AUTOMATION_GITHUB_TOKEN }}
       - run: platform --help

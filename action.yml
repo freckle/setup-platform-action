@@ -7,17 +7,28 @@ inputs:
     default: latest
   suffix:
     description: OS-specific suffix for Platform package archive
-    require: true
+    required: true
     default: x86_64-linux
+  token:
+    description: GitHub Token with access to freckle/platform repository
+    required: true
 outputs: {}
 runs:
   using: composite
   steps:
-    # Needed so we can install cfn-flip
-    - uses: actions/setup-python@v2
+    - name: Download
+      uses: robinraju/release-downloader@v1.3
+      with:
+        repository: freckle/platform
+        latest: ${{ inputs.version == "" }}
+        tag: ${{ inputs.version }}
+        fileName: platform-${{ inputs.suffix }}.tar.gz
+        token: ${{ inputs.token }}
+
     - shell: bash
-      run: |
-        ${{ github.action_path }}/bin/install \
-          -v "${{ inputs.version }}" \
-          -s "${{ inputs.suffix }}" \
-          -S
+      name: Extract
+      run: tar xzvf ./platform-${{ inputs.suffix }}.tar.gz
+
+    - shell: bash
+      name: Install
+      run: cd ./platform && sudo make install
