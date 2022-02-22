@@ -20,7 +20,7 @@ runs:
       uses: robinraju/release-downloader@v1.3
       with:
         repository: freckle/platform
-        latest: ${{ inputs.version == "" }}
+        latest: ${{ inputs.version == '' }}
         tag: ${{ inputs.version }}
         fileName: platform-${{ inputs.suffix }}.tar.gz
         token: ${{ inputs.token }}
