@@ -8,12 +8,9 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    environment: ci
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_DEFAULT_REGION: us-east-1
     steps:
       - uses: actions/checkout@v2
       - uses: ./
+        with:
+          token: ${{ secrets.FRECKLE_AUTOMATION_GITHUB_TOKEN }}
       - run: platform --help
