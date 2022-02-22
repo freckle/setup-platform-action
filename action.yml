@@ -62,7 +62,9 @@ runs:
       run: |
         echo "Replacing BSD install with GNU install"
         brew install coreutils
-        sudo ln -sf "$(which ginstall)" "$(which install)"
+        sudo mkdir -p /usr/local/bin
+        sudo ln -sf "$(which ginstall)" /usr/local/bin/install
+        install --version | grep -Fq GNU
 
     - shell: bash
       run: cd ./platform && sudo make install
