@@ -31,10 +31,6 @@ jobs:
 
   [releases]: https://github.com/freckle/platform/releases
 
-- `suffix`: artifact suffix to use
-
-  Must be `x86_64-linux` or `x86_64-osx`. Defaults to `x86_64-linux`.
-
 - `token`: a GitHub token with access to download artifacts from the private
   `freckle/platform` repository.
 
