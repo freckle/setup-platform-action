@@ -55,7 +55,7 @@ runs:
         token: ${{ inputs.token }}
 
     - shell: bash
-      run: tar xzvf ./platform-${{ inputs.suffix }}.tar.gz
+      run: tar xzvf ./platform-${{ steps.prep.outputs.suffix }}.tar.gz
 
     - shell: bash
       run: cd ./platform && sudo make install
