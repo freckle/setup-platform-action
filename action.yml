@@ -58,6 +58,13 @@ runs:
       run: tar xzvf ./platform-${{ steps.prep.outputs.suffix }}.tar.gz
 
     - shell: bash
+      if: ${{ runner.os == 'macOS' }}
+      run: |
+        echo "Replacing BSD install with GNU install"
+        brew install coreutils
+        ln -sf "$(which ginstall)" "$(which install)"
+
+    - shell: bash
       run: cd ./platform && sudo make install
 
     - if: ${{ steps.prep.outputs.needs-cfn-flip == 'true' }}
