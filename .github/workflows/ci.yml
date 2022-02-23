@@ -7,10 +7,64 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        runner:
+          - ubuntu-latest
+          - macOS-latest
+      fail-fast: false
+
+    runs-on: ${{ matrix.runner }}
+    env:
+      # Dummy env so the CLI doesn't fail on initialization
+      AWS_ACCESS_KEY_ID: x
+      AWS_SECRET_ACCESS_KEY: x
+
     steps:
       - uses: actions/checkout@v2
       - uses: ./
         with:
           token: ${{ secrets.FRECKLE_AUTOMATION_GITHUB_TOKEN }}
-      - run: platform --help
+      - run: |
+          platform version
+
+  test-version-input:
+    runs-on: ubuntu-latest
+    env:
+      # Dummy env so the CLI doesn't fail on initialization
+      AWS_ACCESS_KEY_ID: x
+      AWS_SECRET_ACCESS_KEY: x
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./
+        with:
+          version: v2.1.0.0
+          token: ${{ secrets.FRECKLE_AUTOMATION_GITHUB_TOKEN }}
+      - run: |
+          # Current version prints this to stderr, but we should fix that
+          if [[ "v$(platform version 2>&1)" != "v2.1.0.0" ]]; then
+            echo "Did not install desired version" >&2
+            exit 1
+          fi
+
+  test-version-inferred:
+    runs-on: ubuntu-latest
+    env:
+      # Dummy env so the CLI doesn't fail on initialization
+      AWS_ACCESS_KEY_ID: x
+      AWS_SECRET_ACCESS_KEY: x
+
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          mkdir -p .platform
+          echo "v2.1.0.0" > .platform/VERSION
+      - uses: ./
+        with:
+          token: ${{ secrets.FRECKLE_AUTOMATION_GITHUB_TOKEN }}
+      - run: |
+          if [[ "v$(platform version 2>&1)" != "v2.1.0.0" ]]; then
+            echo "Did not install desired version" >&2
+            exit 1
+          fi

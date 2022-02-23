@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: freckle/setup-platform-action@v5
+      - uses: freckle/setup-platform-action@v6
         with:
           token: ${{ secrets.X }}
       - run: platform container:login
@@ -27,13 +27,13 @@ jobs:
 
 - `version`: the version of Platform CLI to install.
 
-  See its [releases][] for available versions. Defaults to `latest`.
+  If not present, we look for a `.platform/VERSION` file and expect it to
+  contain the version to install. If no such file exists, we'll use the latest
+  Release.
+
+  See [`freckle/platform` Releases][releases] for available versions.
 
   [releases]: https://github.com/freckle/platform/releases
-
-- `suffix`: artifact suffix to use
-
-  Must be `x86_64-linux` or `x86_64-osx`. Defaults to `x86_64-linux`.
 
 - `token`: a GitHub token with access to download artifacts from the private
   `freckle/platform` repository.
