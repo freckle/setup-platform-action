@@ -21,30 +21,32 @@ runs:
           version=${{ inputs.version }}
         fi
 
-        echo "::set-output name=version::$version"
+        {
+          echo "version=$version"
 
-        case "${{ runner.os }}" in
-          Linux)
-            echo "::set-output name=suffix::x86_64-linux"
-            ;;
-          Windows)
-            echo "freckle/platform does not currently release for Windows" >&2
-            exit 1
-            ;;
-          macOS)
-            echo "::set-output name=suffix::x86_64-osx"
-            ;;
-        esac
+          case "${{ runner.os }}" in
+            Linux)
+              echo "suffix=x86_64-linux"
+              ;;
+            Windows)
+              echo "freckle/platform does not currently release for Windows" >&2
+              exit 1
+              ;;
+            macOS)
+              echo "suffix=x86_64-osx"
+              ;;
+          esac
 
-        # Install cfn-flip if the PlatformCLI version requested is old
-        case "$version" in
-          v0* | v1* | v2.0*)
-            echo "::set-output name=needs-cfn-flip::true"
-            ;;
-          *)
-            echo "::set-output name=needs-cfn-flip::false"
-            ;;
-        esac
+          # Install cfn-flip if the PlatformCLI version requested is old
+          case "$version" in
+            v0* | v1* | v2.0*)
+              echo "needs-cfn-flip=true"
+              ;;
+            *)
+              echo "needs-cfn-flip=false"
+              ;;
+          esac
+        } >>"$GITHUB_OUTPUT"
 
     - uses: robinraju/release-downloader@v1.3
       with:
