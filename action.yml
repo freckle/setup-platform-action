@@ -49,10 +49,14 @@ runs:
           esac
         } >>"$GITHUB_OUTPUT"
 
-    - name: Install coreutils on OSX
+    - name: Replace BSD install with GNU install
       shell: bash
       if: ${{ runner.os == 'macOS' }}
-      run: brew install coreutils
+      run: |
+        brew install coreutils
+        sudo mkdir -p /usr/local/bin
+        sudo ln -sf "$(which ginstall)" /usr/local/bin/install
+        install --version | grep -Fq GNU
 
     - name: Install PlatformCLI
       shell: bash
