@@ -13,6 +13,7 @@ runs:
   using: composite
   steps:
     - id: prep
+      name: Prepare for installation
       shell: bash
       run: |
         if [[ -f .platform/VERSION ]]; then
@@ -48,11 +49,14 @@ runs:
           esac
         } >>"$GITHUB_OUTPUT"
 
-    - shell: bash
+    - name: Install coreutils on OSX
+      shell: bash
       if: ${{ runner.os == 'macOS' }}
       run: brew install coreutils
 
-    - run: |
+    - name: Install PlatformCLI
+      shell: bash
+      run: |
         if [[ -n "$PLATFORM_VERSION" ]]; then
           gh release --repo freckle/platform download "$PLATFORM_VERSION" \
             --pattern "$PLATFORM_ASSET"
@@ -68,9 +72,11 @@ runs:
         PLATFORM_ASSET: platform-${{ steps.prep.outputs.suffix }}.tar.gz
         PLATFORM_VERSION: ${{ steps.prep.outputs.version }}
 
-    - if: ${{ steps.prep.outputs.needs-cfn-flip == 'true' }}
+    - name: Setup for cfn-flip
+      if: ${{ steps.prep.outputs.needs-cfn-flip == 'true' }}
       uses: actions/setup-python@v2
 
-    - if: ${{ steps.prep.outputs.needs-cfn-flip == 'true' }}
+    - name: Install cfn-flip
+      if: ${{ steps.prep.outputs.needs-cfn-flip == 'true' }}
       shell: bash
       run: pip install cfn-flip
