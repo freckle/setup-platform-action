@@ -48,28 +48,25 @@ runs:
           esac
         } >>"$GITHUB_OUTPUT"
 
-    - uses: robinraju/release-downloader@v1.3
-      with:
-        repository: freckle/platform
-        latest: ${{ steps.prep.outputs.version == '' }}
-        tag: ${{ steps.prep.outputs.version }}
-        fileName: platform-${{ steps.prep.outputs.suffix }}.tar.gz
-        token: ${{ inputs.token }}
-
-    - shell: bash
-      run: tar xzvf ./platform-${{ steps.prep.outputs.suffix }}.tar.gz
-
     - shell: bash
       if: ${{ runner.os == 'macOS' }}
-      run: |
-        echo "Replacing BSD install with GNU install"
-        brew install coreutils
-        sudo mkdir -p /usr/local/bin
-        sudo ln -sf "$(which ginstall)" /usr/local/bin/install
-        install --version | grep -Fq GNU
+      run: brew install coreutils
 
-    - shell: bash
-      run: cd ./platform && sudo make install
+    - run: |
+        if [[ -n "$PLATFORM_VERSION" ]]; then
+          gh release --repo freckle/platform download "$PLATFORM_VERSION" \
+            --pattern "$PLATFORM_ASSET"
+        else
+          gh release --repo freckle/platform download \
+            --pattern "$PLATFORM_ASSET"
+        fi
+
+        tar xzvf "$PLATFORM_ASSET"
+        cd ./platform && sudo make install
+      env:
+        GH_TOKEN: ${{ inputs.token }}
+        PLATFORM_ASSET: platform-${{ steps.prep.outputs.suffix }}.tar.gz
+        PLATFORM_VERSION: ${{ steps.prep.outputs.version }}
 
     - if: ${{ steps.prep.outputs.needs-cfn-flip == 'true' }}
       uses: actions/setup-python@v2
