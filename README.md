@@ -15,7 +15,7 @@ jobs:
   image:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: freckle/setup-platform-action@v6
         with:
           token: ${{ secrets.X }}
