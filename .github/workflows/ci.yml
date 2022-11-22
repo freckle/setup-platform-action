@@ -21,7 +21,7 @@ jobs:
       AWS_SECRET_ACCESS_KEY: x
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./
         with:
           token: ${{ secrets.FRECKLE_AUTOMATION_GITHUB_TOKEN }}
@@ -36,7 +36,7 @@ jobs:
       AWS_SECRET_ACCESS_KEY: x
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./
         with:
           version: v2.1.0.0
@@ -56,7 +56,7 @@ jobs:
       AWS_SECRET_ACCESS_KEY: x
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: |
           mkdir -p .platform
           echo "v2.1.0.0" > .platform/VERSION
