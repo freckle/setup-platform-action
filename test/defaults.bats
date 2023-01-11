@@ -29,7 +29,7 @@ load /usr/lib/bats-assert/load
 }
 
 @test "tag" {
-  assert [[ -n "$TAG" ]]
+  assert test -n "$TAG"
 
   case "$GH_EVENT_NAME" in
     pull_request)
