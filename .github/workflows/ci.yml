@@ -36,7 +36,7 @@ jobs:
         with:
           bats-version: 1.7.0
       - uses: brokenpip3/setup-bats-libs@0.1.0
-      - run: test/defaults.bats
+      - run: bats test/defaults.bats
         env:
           GH_EVENT_NAME: ${{ github.event_name }}
           GH_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
@@ -67,7 +67,7 @@ jobs:
         with:
           bats-version: 1.7.0
       - uses: brokenpip3/setup-bats-libs@0.1.0
-      - run: test/configured.bats
+      - run: bats test/configured.bats
         env:
           GH_EVENT_NAME: ${{ github.event_name }}
           GH_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
