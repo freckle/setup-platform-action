@@ -92,8 +92,8 @@ app's `.platform.yaml`:
   the remainder of the workflow. For details on what this affects, see
   `platform(1)`.
 
-- **app**: if present, this will be set as `PLATFORM_NO_APP` for the remainder
-  of the workflow. For details on what this affects, see `platform(1)`.
+- **app**: if present, this will be set as `PLATFORM_APP` for the remainder of
+  the workflow. For details on what this affects, see `platform(1)`.
 
 - **resource**: if present, this will be set as `PLATFORM_RESOURCE` for the
   remainder of the workflow. For details on what this affects, see
