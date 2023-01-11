@@ -1,3 +1,6 @@
+load /usr/lib/bats-support/load
+load /usr/lib/bats-assert/load
+
 @test "PlatformCLI version" {
   run platform version
   assert_output "PlatformCLI v2.1.0.0"
