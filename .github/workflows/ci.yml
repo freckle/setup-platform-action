@@ -24,7 +24,6 @@ jobs:
       - run: stackctl version
 
   test-defaults:
-    strategy:
     runs-on: ubuntu-latest
 
     steps:
