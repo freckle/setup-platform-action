@@ -6,10 +6,11 @@ load /usr/lib/bats-assert/load
   assert_output "PlatformCLI v2.4.1.0"
 }
 
-@test "Stackctl version" {
-  run stackctl version
-  assert_output "Stackctl v1.2.0.0"
-}
+# TODO https://github.com/freckle/stackctl/pull/34
+# @test "Stackctl version" {
+#   run stackctl version
+#   assert_output "Stackctl v1.2.0.0"
+# }
 
 @test "Logging ENV" {
   assert_equal "$LOG_COLOR" always
