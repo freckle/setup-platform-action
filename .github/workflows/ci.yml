@@ -13,25 +13,43 @@ jobs:
           - ubuntu-latest
           - macOS-latest
       fail-fast: false
-
     runs-on: ${{ matrix.runner }}
-    env:
-      # Dummy env so the CLI doesn't fail on initialization
-      AWS_ACCESS_KEY_ID: x
-      AWS_SECRET_ACCESS_KEY: x
 
     steps:
       - uses: actions/checkout@v3
       - uses: ./
         with:
           token: ${{ secrets.FRECKLE_AUTOMATION_GITHUB_TOKEN }}
-      - run: |
-          platform version
+      - run: platform version
+      - run: stackctl version
 
-  test-version-input:
+  test-defaults:
+    strategy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - id: setup
+        uses: ./
+        with:
+          token: ${{ secrets.FRECKLE_AUTOMATION_GITHUB_TOKEN }}
+      - uses: mig4/setup-bats@v1
+        with:
+          bats-version: 1.7.0
+      - uses: brokenpip3/setup-bats-libs@0.1.0
+      - run: test/defaults.bats
+        env:
+          GH_EVENT_NAME: ${{ github.event_name }}
+          GH_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          GH_PUSH_SHA: ${{ github.event.push.after }}
+          GH_SHA: ${{ github.sha }}
+          TAG: ${{ steps.setup.outputs.tag }}
+
+  test-configured:
     runs-on: ubuntu-latest
     env:
-      # Dummy env so the CLI doesn't fail on initialization
+      # Dummy env so the older CLI versions don't fail on initialization. Once a
+      # non-latest version has that fix, we can update here and remove this.
       AWS_ACCESS_KEY_ID: x
       AWS_SECRET_ACCESS_KEY: x
 
@@ -39,32 +57,21 @@ jobs:
       - uses: actions/checkout@v3
       - uses: ./
         with:
-          version: v2.1.0.0
           token: ${{ secrets.FRECKLE_AUTOMATION_GITHUB_TOKEN }}
-      - run: |
-          # Current version prints this to stderr, but we should fix that
-          if [[ "v$(platform version 2>&1)" != "v2.1.0.0" ]]; then
-            echo "Did not install desired version" >&2
-            exit 1
-          fi
-
-  test-version-inferred:
-    runs-on: ubuntu-latest
-    env:
-      # Dummy env so the CLI doesn't fail on initialization
-      AWS_ACCESS_KEY_ID: x
-      AWS_SECRET_ACCESS_KEY: x
-
-    steps:
-      - uses: actions/checkout@v3
-      - run: |
-          mkdir -p .platform
-          echo "v2.1.0.0" > .platform/VERSION
-      - uses: ./
+          version: "2.1.0.0"
+          environment: dev
+          app: my-app
+          resource: my-resource
+          no-validate: "1"
+          stackctl-version: "1.1.4.0"
+      - uses: mig4/setup-bats@v1
         with:
-          token: ${{ secrets.FRECKLE_AUTOMATION_GITHUB_TOKEN }}
-      - run: |
-          if [[ "v$(platform version 2>&1)" != "v2.1.0.0" ]]; then
-            echo "Did not install desired version" >&2
-            exit 1
-          fi
+          bats-version: 1.7.0
+      - uses: brokenpip3/setup-bats-libs@0.1.0
+      - run: test/configured.bats
+        env:
+          GH_EVENT_NAME: ${{ github.event_name }}
+          GH_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          GH_PUSH_SHA: ${{ github.event.push.after }}
+          GH_SHA: ${{ github.sha }}
+          TAG: ${{ steps.setup.outputs.tag }}

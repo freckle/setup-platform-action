@@ -1,57 +1,51 @@
 name: Platform setup
-description: Install Freckle Platform CLI
+description: Install and configure PlatformCLI and Stackctl
+
 inputs:
   version:
     description: Version of Platform CLI to install
     required: true
-    default: ""
+    default: "2.4.1.0"
+
   token:
     description: GitHub Token with access to freckle/platform repository
     required: true
-outputs: {}
+
+  environment:
+    description: Value to set as PLATFORM_ENVIRONMENT
+    required: true
+    default: ""
+
+  app:
+    description: Value to set as PLATFORM_APP
+    required: true
+    default: ""
+
+  resource:
+    description: Value to set as PLATFORM_RESOURCE
+    required: true
+    default: ""
+
+  no-validate:
+    description: Value to set as PLATFORM_NO_VALIDATE
+    required: true
+    default: ""
+
+  stackctl-version:
+    description: Stackctl version to install
+    required: true
+    default: "1.2.0.0"
+
+outputs:
+  tag:
+    value: ${{ steps.set-tag.outputs.tag }}
+
 runs:
   using: composite
   steps:
-    - id: prep
-      name: Prepare for installation
+    - if: ${{ runner.os == 'macOS' }}
+      name: Replace BSD install with GNU install
       shell: bash
-      run: |
-        if [[ -f .platform/VERSION ]]; then
-          read -r version < .platform/VERSION
-        else
-          version=${{ inputs.version }}
-        fi
-
-        {
-          echo "version=$version"
-
-          case "${{ runner.os }}" in
-            Linux)
-              echo "suffix=x86_64-linux"
-              ;;
-            Windows)
-              echo "freckle/platform does not currently release for Windows" >&2
-              exit 1
-              ;;
-            macOS)
-              echo "suffix=x86_64-osx"
-              ;;
-          esac
-
-          # Install cfn-flip if the PlatformCLI version requested is old
-          case "$version" in
-            v0* | v1* | v2.0*)
-              echo "needs-cfn-flip=true"
-              ;;
-            *)
-              echo "needs-cfn-flip=false"
-              ;;
-          esac
-        } >>"$GITHUB_OUTPUT"
-
-    - name: Replace BSD install with GNU install
-      shell: bash
-      if: ${{ runner.os == 'macOS' }}
       run: |
         brew install coreutils
         sudo mkdir -p /usr/local/bin
@@ -59,28 +53,65 @@ runs:
         install --version | grep -Fq GNU
 
     - name: Install PlatformCLI
+      uses: pbrisbin/setup-tool-action@v1
+      with:
+        name: platform
+        version: ${{ inputs.version }}
+        url: 'https://github.com/freckle/{name}/releases/download/v{version}/{name}-{arch}-{os}.{ext}'
+        github-token: ${{ inputs.token }}
+        arch: x86_64
+        os-darwin: osx
+        subdir: '{name}'
+
+    - name: Install Stackctl
+      uses: pbrisbin/setup-tool-action@v1
+      with:
+        name: stackctl
+        version: ${{ inputs.stackctl-version }}
+        url: 'https://github.com/freckle/{name}/releases/download/v{version}/{name}-{arch}-{os}.{ext}'
+        github-token: ${{ inputs.token }}
+        arch: x86_64
+        os-darwin: osx
+        subdir: '{name}'
+
+    - name: Configure PlatformCLI and Stackctl ENV
       shell: bash
       run: |
-        if [[ -n "$PLATFORM_VERSION" ]]; then
-          gh release --repo freckle/platform download "$PLATFORM_VERSION" \
-            --pattern "$PLATFORM_ASSET"
-        else
-          gh release --repo freckle/platform download \
-            --pattern "$PLATFORM_ASSET"
-        fi
+        {
+          echo 'LOG_COLOR=always'
+          echo 'LOG_DESTINATION=stderr'
+          echo 'STACKCTL_DIRECTORY=.platform/specs'
 
-        tar xzvf "$PLATFORM_ASSET"
-        cd ./platform && sudo make install
-      env:
-        GH_TOKEN: ${{ inputs.token }}
-        PLATFORM_ASSET: platform-${{ steps.prep.outputs.suffix }}.tar.gz
-        PLATFORM_VERSION: ${{ steps.prep.outputs.version }}
+          if [[ -n "${{ inputs.app }}" ]]; then
+            echo 'PLATFORM_APP=${{ inputs.app }}'
+          fi
 
-    - name: Setup for cfn-flip
-      if: ${{ steps.prep.outputs.needs-cfn-flip == 'true' }}
-      uses: actions/setup-python@v2
+          if [[ -n "${{ inputs.environment }}" ]]; then
+            echo 'PLATFORM_ENVIRONMENT=${{ inputs.environment }}'
+          fi
 
-    - name: Install cfn-flip
-      if: ${{ steps.prep.outputs.needs-cfn-flip == 'true' }}
+          if [[ -n "${{ inputs.resource }}" ]]; then
+            echo 'PLATFORM_RESOURCE=${{ inputs.resource }}'
+          fi
+
+          if [[ -n "${{ inputs.no-validate }}" ]]; then
+            echo 'PLATFORM_NO_VALIDATE=${{ inputs.no-validate }}'
+          fi
+
+        } >>"$GITHUB_ENV"
+
+    # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request
+    #
+    # > Note that GITHUB_SHA for [the pull] event is the last merge commit of
+    # > the pull request merge branch. If you want to get the commit ID for the
+    # > last commit to the head branch of the pull request, use
+    # > github.event.pull_request.head.sha instead.
+    #
+    - id: set-tag
+      name: Set tag output
       shell: bash
-      run: pip install cfn-flip
+      run: |
+        tag=${{ github.event.pull_request.head.sha }}
+        tag=${tag:-${{ github.event.push.after }}}
+        tag=${tag:-${{ github.sha }}}
+        echo "tag=$tag" >>"$GITHUB_OUTPUT"
