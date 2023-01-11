@@ -57,22 +57,22 @@ runs:
       with:
         name: platform
         version: ${{ inputs.version }}
-        url: 'https://github.com/freckle/{name}/releases/download/v{version}/{name}-{arch}-{os}.{ext}'
+        url: "https://github.com/freckle/{name}/releases/download/v{version}/{name}-{arch}-{os}.{ext}"
         github-token: ${{ inputs.token }}
         arch: x86_64
         os-darwin: osx
-        subdir: '{name}'
+        subdir: "{name}"
 
     - name: Install Stackctl
       uses: pbrisbin/setup-tool-action@v1
       with:
         name: stackctl
         version: ${{ inputs.stackctl-version }}
-        url: 'https://github.com/freckle/{name}/releases/download/v{version}/{name}-{arch}-{os}.{ext}'
+        url: "https://github.com/freckle/{name}/releases/download/v{version}/{name}-{arch}-{os}.{ext}"
         github-token: ${{ inputs.token }}
         arch: x86_64
         os-darwin: osx
-        subdir: '{name}'
+        subdir: "{name}"
 
     - name: Configure PlatformCLI and Stackctl ENV
       shell: bash
