@@ -71,7 +71,7 @@ app's `.platform.yaml`:
     platform deploy --tag '${{ steps.prep.outputs.tag }}' --inspect
 
     # Work with it naturally using Stackctl
-    stackctl changes --format pr >/tmp/changes.md
+    stackctl changes --format pr /tmp/changes.md
 
 - if: ${{ changes.platform-yaml == 'true' }}
   uses: freckle/add-pr-comment@v1
