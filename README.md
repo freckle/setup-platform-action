@@ -110,8 +110,8 @@ app's `.platform.yaml`:
 ## Outputs
 
 - **tag**: a consistent, source-specific value that should be used throughout
-  build/push/deploy actions. It's currently the head sha for PR events, or
-  `github.sha` otherwise.
+  build/push/deploy actions. It's currently the head sha for PR events, the
+  "after" sha for pushes, or `github.sha`.
 
 ---
 
