@@ -39,6 +39,8 @@ inputs:
 outputs:
   tag:
     value: ${{ steps.set-tag.outputs.tag }}
+  cache:
+    value: ${{ steps.set-cache.outputs.cache }}
 
 runs:
   using: composite
@@ -114,3 +116,19 @@ runs:
         tag=${tag:-${{ github.event.push.after }}}
         tag=${tag:-${{ github.sha }}}
         echo "tag=$tag" >>"$GITHUB_OUTPUT"
+
+    - id: set-cache
+      name: Set cache ouput
+      shell: bash
+      run: |
+        app=${{ inputs.app }}
+        app=${app:-.}
+        echo "cache=$app/.platform/cache" >>"$GITHUB_OUTPUT"
+
+    - name: Cache .platform/cache directory
+      uses: actions/cache@v3
+      with:
+        path: ${{ steps.set-cache.outputs.cache }}
+        key: ${{ runner.os }}-${{ github.job }}-${{ steps.set-tag.outputs.tag }}
+        restore-keys: |
+          ${{ runner.os }}-${{ github.job }}-
