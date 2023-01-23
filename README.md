@@ -109,6 +109,9 @@ documentation for the version you're using.
   build/push/deploy actions. It's currently the head sha for `pull_request`
   events, the "after" sha `push` events, and `github.sha` for all other events
 
+- **cache**: path to the `.platform/cache` directory, for which we've setup an
+  `actions/cache` step. This output is only useful if in a multi-app repository.
+
 ---
 
 [LICENSE](./LICENSE)
