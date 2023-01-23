@@ -64,7 +64,7 @@ you can do things like post changeset details to our PR:
     # Which you can work with naturally using Stackctl
     stackctl changes --format pr /tmp/changes.md
 
-- uses: {your preferred add-pr-comment action}
+- uses: { your preferred add-pr-comment action }
   with:
     body-path: /tmp/changes.md
 ```
