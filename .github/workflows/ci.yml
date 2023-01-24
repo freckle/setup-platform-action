@@ -40,7 +40,7 @@ jobs:
         env:
           GH_EVENT_NAME: ${{ github.event_name }}
           GH_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-          GH_PUSH_SHA: ${{ github.event.push.after }}
+          GH_PUSH_SHA: ${{ github.event.after }}
           GH_SHA: ${{ github.sha }}
           TAG: ${{ steps.setup.outputs.tag }}
 

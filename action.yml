@@ -113,7 +113,7 @@ runs:
       shell: bash
       run: |
         tag=${{ github.event.pull_request.head.sha }}
-        tag=${tag:-${{ github.event.push.after }}}
+        tag=${tag:-${{ github.event.after }}}
         tag=${tag:-${{ github.sha }}}
         echo "tag=$tag" >>"$GITHUB_OUTPUT"
 
