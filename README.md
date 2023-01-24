@@ -20,7 +20,7 @@ outside Freckle.
     token: ${{ secrets.X }}
 
     # Optional
-    # version: 2.5.0.1
+    # version: 2.5.1.0
     # app-directory: my-app     # If in multi-app repository
     # environment: prod
     # resource: my-resource     # If in multi-resource app

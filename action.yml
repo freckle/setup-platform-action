@@ -5,7 +5,7 @@ inputs:
   version:
     description: Version of Platform CLI to install
     required: true
-    default: "2.5.0.1"
+    default: "2.5.1.0"
 
   token:
     description: GitHub Token with access to freckle/platform repository
