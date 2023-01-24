@@ -27,6 +27,14 @@ load /usr/lib/bats-assert/load
   assert_equal "$PLATFORM_NO_VALIDATE" ""
 }
 
+@test "Slack notification ENV" {
+  assert_equal "$SLACK_ICON" "https://github.com/freckle-automation.png?size=48"
+  assert_equal "$SLACK_USERNAME" "GitHub Actions"
+  assert_equal "$SLACK_TITLE" "deploy"
+  assert_equal "$SLACK_FOOTER" "$TAG"
+  assert_equal "$MSG_MINIMAL" "actions url,commit"
+}
+
 @test "tag" {
   assert test -n "$TAG"
 

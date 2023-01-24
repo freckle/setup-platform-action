@@ -18,3 +18,7 @@ load /usr/lib/bats-assert/load
   assert_equal "$PLATFORM_RESOURCE" "my-resource"
   assert_equal "$PLATFORM_NO_VALIDATE" "1"
 }
+
+@test "Slack notification ENV" {
+  assert_equal "$SLACK_TITLE" "my-app dev my-resource deploy"
+}

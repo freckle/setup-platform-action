@@ -132,3 +132,28 @@ runs:
         key: ${{ runner.os }}-${{ github.job }}-${{ steps.set-tag.outputs.tag }}
         restore-keys: |
           ${{ runner.os }}-${{ github.job }}-
+
+    - name: Configure Slack notification ENV
+      shell: bash
+      run: |
+        title="deploy"
+
+        if [[ -n "$PLATFORM_RESOURCE" ]]; then
+          title="$PLATFORM_RESOURCE $title"
+        fi
+
+        if [[ -n "$PLATFORM_ENVIRONMENT" ]]; then
+          title="$PLATFORM_ENVIRONMENT $title"
+        fi
+
+        if [[ -n "$PLATFORM_APP" ]]; then
+          title="$PLATFORM_APP $title"
+        fi
+
+        cat <<EOM >>"$GITHUB_ENV"
+        SLACK_ICON=https://github.com/freckle-automation.png?size=48
+        SLACK_USERNAME=GitHub Actions
+        SLACK_TITLE=$title
+        SLACK_FOOTER=${{ steps.set-tag.outputs.tag }}
+        MSG_MINIMAL=actions url,commit
+        EOM

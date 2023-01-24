@@ -50,6 +50,21 @@ Or deploy
 - run: platform deploy --tag '${{ steps.setup.outputs.tag }}'
 ```
 
+We also export various `SLACK_*` environment variables, so you don't have to set
+as much when notifying via the `rtCamp` action:
+
+```yaml
+- if: ${{ always() }}
+  uses: rtCamp/action-slack-notify@v2
+  env:
+    # Only this is now required
+    SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+    # But you probably want this too
+    SLACK_COLOR: ${{ github.action_status }}
+    SLACK_MESSAGE: ${{ github.action_status }}
+```
+
 ## Stackctl
 
 The action also installs a `stackctl` executable and configures `STACKCTL_*`
