@@ -58,8 +58,8 @@ jobs:
         with:
           token: ${{ secrets.FRECKLE_AUTOMATION_GITHUB_TOKEN }}
           version: "2.1.0.0"
+          app-directory: my-app
           environment: dev
-          app: my-app
           resource: my-resource
           no-validate: "1"
           stackctl-version: "1.1.4.0"

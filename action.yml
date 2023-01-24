@@ -11,13 +11,13 @@ inputs:
     description: GitHub Token with access to freckle/platform repository
     required: true
 
-  environment:
-    description: Value to set as PLATFORM_ENVIRONMENT
+  app-directory:
+    description: Value to set as PLATFORM_APP_DIRECTORY
     required: true
     default: ""
 
-  app:
-    description: Value to set as PLATFORM_APP
+  environment:
+    description: Value to set as PLATFORM_ENVIRONMENT
     required: true
     default: ""
 
@@ -83,8 +83,8 @@ runs:
           echo 'LOG_DESTINATION=stderr'
           echo 'STACKCTL_DIRECTORY=.platform/specs'
 
-          if [[ -n "${{ inputs.app }}" ]]; then
-            echo 'PLATFORM_APP=${{ inputs.app }}'
+          if [[ -n "${{ inputs.app-directory }}" ]]; then
+            echo 'PLATFORM_APP_DIRECTORY=${{ inputs.app-directory }}'
           fi
 
           if [[ -n "${{ inputs.environment }}" ]]; then
@@ -121,7 +121,7 @@ runs:
       name: Set cache ouput
       shell: bash
       run: |
-        app=${{ inputs.app }}
+        app=${{ inputs.app-directory }}
         app=${app:-.}
         echo "cache=$app/.platform/cache" >>"$GITHUB_OUTPUT"
 
@@ -146,8 +146,8 @@ runs:
           title="$PLATFORM_ENVIRONMENT $title"
         fi
 
-        if [[ -n "$PLATFORM_APP" ]]; then
-          title="$PLATFORM_APP $title"
+        if [[ -n "$PLATFORM_APP_DIRECTORY" ]]; then
+          title="$PLATFORM_APP_DIRECTORY $title"
         fi
 
         cat <<EOM >>"$GITHUB_ENV"

@@ -13,7 +13,7 @@ load /usr/lib/bats-assert/load
 # }
 
 @test "PlatformCLI ENV" {
-  assert_equal "$PLATFORM_APP" "my-app"
+  assert_equal "$PLATFORM_APP_DIRECTORY" "my-app"
   assert_equal "$PLATFORM_ENVIRONMENT" "dev"
   assert_equal "$PLATFORM_RESOURCE" "my-resource"
   assert_equal "$PLATFORM_NO_VALIDATE" "1"
