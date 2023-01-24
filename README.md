@@ -21,8 +21,8 @@ outside Freckle.
 
     # Optional
     # version: 2.5.0.1
+    # app-directory: my-app     # If in multi-app repository
     # environment: prod
-    # app: my-app               # If in multi-app repository
     # resource: my-resource     # If in multi-resource app
     # stackctl-version: 1.3.0.1
 ```
@@ -95,12 +95,13 @@ you can do things like post changeset details to our PR:
   stable version. We recommend using this default, along with specifying a
   `required_version` in your `.platform.yaml`.
 
+- **app-directory**: if present, this will be set as `PLATFORM_APP_DIRECTORY`
+  for the remainder of the workflow. For details on what this affects, see
+  `platform(1)`.
+
 - **environment**: if present, this will be set as `PLATFORM_ENVIRONMENT` for
   the remainder of the workflow. For details on what this affects, see
   `platform(1)`.
-
-- **app**: if present, this will be set as `PLATFORM_APP` for the remainder of
-  the workflow. For details on what this affects, see `platform(1)`.
 
 - **resource**: if present, this will be set as `PLATFORM_RESOURCE` for the
   remainder of the workflow. For details on what this affects, see
