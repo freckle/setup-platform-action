@@ -121,7 +121,7 @@ runs:
       name: Set cache ouput
       shell: bash
       run: |
-        app=${{ inputs.app-directory }}
+        app=$PLATFORM_APP_DIRECTORY
         app=${app:-.}
         echo "cache=$app/.platform/cache" >>"$GITHUB_OUTPUT"
 
