@@ -61,8 +61,8 @@ as much when notifying via the `rtCamp` action:
     SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
 
     # But you probably want this too
-    SLACK_COLOR: ${{ github.action_status }}
-    SLACK_MESSAGE: ${{ github.action_status }}
+    SLACK_COLOR: ${{ job.status }}
+    SLACK_MESSAGE: ${{ job.status }}
 ```
 
 ## Stackctl
