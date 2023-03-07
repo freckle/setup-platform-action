@@ -17,7 +17,7 @@ load /usr/lib/bats-assert/load
 }
 
 @test "Stackctl ENV" {
-  assert_equal "$STACKCTL_DIRECTORY" .platform/specs
+  assert_equal "$STACKCTL_DIRECTORY" ./.platform/specs
 }
 
 @test "PlatformCLI ENV" {

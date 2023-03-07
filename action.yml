@@ -36,6 +36,11 @@ inputs:
     required: true
     default: "1.4.0.0"
 
+  stackctl-directory:
+    description: Value to set as STACKCTL_DIRECTORY
+    required: true
+    default: .platform/specs
+
 outputs:
   tag:
     value: ${{ steps.set-tag.outputs.tag }}
@@ -81,7 +86,6 @@ runs:
         {
           echo 'LOG_COLOR=always'
           echo 'LOG_DESTINATION=stderr'
-          echo 'STACKCTL_DIRECTORY=.platform/specs'
 
           if [[ -n "${{ inputs.app-directory }}" ]]; then
             echo 'PLATFORM_APP_DIRECTORY=${{ inputs.app-directory }}'
@@ -97,6 +101,12 @@ runs:
 
           if [[ -n "${{ inputs.no-validate }}" ]]; then
             echo 'PLATFORM_NO_VALIDATE=${{ inputs.no-validate }}'
+          fi
+
+          if [[ -n "${{ inputs.stackctl-directory }}" ]]; then
+            app=${{ inputs.app-directory }}
+            app=${app:-.}
+            echo "STACKCTL_DIRECTORY=$app/${{ inputs.stackctl-directory }}"
           fi
 
         } >>"$GITHUB_ENV"
