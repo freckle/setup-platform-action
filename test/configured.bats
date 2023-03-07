@@ -12,6 +12,10 @@ load /usr/lib/bats-assert/load
 #   assert_output "Stackctl v1.1.4.0"
 # }
 
+@test "Stackctl ENV" {
+  assert_equal "$STACKCTL_DIRECTORY" my-app/.platform/specs
+}
+
 @test "PlatformCLI ENV" {
   assert_equal "$PLATFORM_APP_DIRECTORY" "my-app"
   assert_equal "$PLATFORM_ENVIRONMENT" "dev"
