@@ -24,5 +24,5 @@ load /usr/lib/bats-assert/load
 }
 
 @test "Slack notification ENV" {
-  assert_equal "$SLACK_TITLE" "my-app dev my-resource deploy"
+  assert_equal "$SLACK_TITLE" "Deploy my-app/my-resource to dev"
 }

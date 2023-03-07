@@ -30,7 +30,7 @@ load /usr/lib/bats-assert/load
 @test "Slack notification ENV" {
   assert_equal "$SLACK_ICON" "https://github.com/freckle-automation.png?size=48"
   assert_equal "$SLACK_USERNAME" "GitHub Actions"
-  assert_equal "$SLACK_TITLE" "deploy"
+  assert_equal "$SLACK_TITLE" "Deploy"
   assert_equal "$SLACK_FOOTER" "$TAG"
   assert_equal "$MSG_MINIMAL" "actions url,commit"
 }
