@@ -156,18 +156,18 @@ runs:
     - name: Configure Slack notification ENV
       shell: bash
       run: |
-        title="deploy"
+        title="Deploy"
 
-        if [[ -n "$PLATFORM_RESOURCE" ]]; then
-          title="$PLATFORM_RESOURCE $title"
+        if [[ -n "$PLATFORM_APP_DIRECTORY" ]] && [[ -n "$PLATFORM_RESOURCE" ]]; then
+          title+=" $PLATFORM_APP_DIRECTORY/$PLATFORM_RESOURCE"
+        elif [[ -n "$PLATFORM_APP_DIRECTORY" ]]; then
+          title+=" $PLATFORM_APP_DIRECTORY"
+        elif [[ -n "$PLATFORM_RESOURCE" ]]; then
+          title+=" $PLATFORM_RESOURCE"
         fi
 
         if [[ -n "$PLATFORM_ENVIRONMENT" ]]; then
-          title="$PLATFORM_ENVIRONMENT $title"
-        fi
-
-        if [[ -n "$PLATFORM_APP_DIRECTORY" ]]; then
-          title="$PLATFORM_APP_DIRECTORY $title"
+          title+=" to $PLATFORM_ENVIRONMENT"
         fi
 
         cat <<EOM >>"$GITHUB_ENV"
