@@ -41,6 +41,11 @@ inputs:
     required: true
     default: .platform/specs
 
+  stackctl-filter:
+    description: Value to set as STACKCTL_FILTER
+    required: true
+    default: ""
+
 outputs:
   tag:
     value: ${{ steps.set-tag.outputs.tag }}
@@ -107,6 +112,11 @@ runs:
             app=${{ inputs.app-directory }}
             app=${app:-.}
             echo "STACKCTL_DIRECTORY=$app/${{ inputs.stackctl-directory }}"
+          fi
+
+          if [[ -n "${{ inputs.stackctl-filter }}" ]]; then
+            echo "STACKCTL_FILTER=${{ inputs.stackctl-filter }}"
+            echo "STACKCTL_FILTERS=${{ inputs.stackctl-filter }}"
           fi
 
         } >>"$GITHUB_ENV"
