@@ -138,19 +138,24 @@ runs:
         echo "tag=$tag" >>"$GITHUB_OUTPUT"
 
     - id: set-cache
-      name: Set cache ouput
+      name: Set cache path output and resource
       shell: bash
       run: |
         app=$PLATFORM_APP_DIRECTORY
         app=${app:-.}
         echo "cache=$app/.platform/cache" >>"$GITHUB_OUTPUT"
 
+        resource=$PLATFORM_RESOURCE
+        resource=${resource:-all-resources}
+        echo "resource=$resource" >>"$GITHUB_OUTPUT"
+
     - name: Cache .platform/cache directory
       uses: actions/cache@v3
       with:
         path: ${{ steps.set-cache.outputs.cache }}
-        key: ${{ runner.os }}-${{ github.job }}-${{ steps.set-tag.outputs.tag }}
+        key: ${{ runner.os }}-${{ github.job }}-${{ steps.set-cache.outputs.resource }}-${{ steps.set-tag.outputs.tag }}
         restore-keys: |
+          ${{ runner.os }}-${{ github.job }}-${{ steps.set-cache.outputs.resource }}-
           ${{ runner.os }}-${{ github.job }}-
 
     - name: Configure Slack notification ENV
