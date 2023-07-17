@@ -20,11 +20,11 @@ outside Freckle.
     token: ${{ secrets.X }}
 
     # Optional
-    # version: 3.0.1.0
+    # version: 3.1.2.1
     # app-directory: my-app     # If in multi-app repository
     # environment: prod
     # resource: my-resource     # If in multi-resource app
-    # stackctl-version: 1.4.0.0
+    # stackctl-version: 1.4.2.1
 ```
 
 The action installs a `platform` executable, configures `PLATFORM_*` environment

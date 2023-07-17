@@ -5,7 +5,7 @@ inputs:
   version:
     description: Version of Platform CLI to install
     required: true
-    default: "3.0.1.0"
+    default: "3.1.2.1"
 
   token:
     description: GitHub Token with access to freckle/platform repository
@@ -34,7 +34,7 @@ inputs:
   stackctl-version:
     description: Stackctl version to install
     required: true
-    default: "1.4.0.0"
+    default: "1.4.2.1"
 
   stackctl-directory:
     description: Value to set as STACKCTL_DIRECTORY
