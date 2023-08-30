@@ -61,6 +61,7 @@ jobs:
         with:
           # Use PAT so this will trigger test/lint on the created PR
           token: ${{ secrets.FRECKLE_AUTOMATION_GITHUB_TOKEN }}
+          base: main
           commit-message: |
             Update ${{ matrix.input }} to latest ${{ matrix.tool }} release
           title: |
