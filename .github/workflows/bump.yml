@@ -1,0 +1,67 @@
+name: Bump
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # daily
+
+  # test changes to this file itself
+  pull_request:
+    paths:
+      - .github/workflows/bump.yml
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        tool:
+          - platform
+          - stackctl
+
+        include:
+          - tool: platform
+            input: version
+          - tool: stackctl
+            input: stackctl-version
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - id: current
+        name: "Determine current ${{ matrix.input }} default"
+        uses: mikefarah/yq
+        with:
+          cmd: yq ".inputs.${{ matrix.input }}.default" action.yml
+
+      - id: latest
+        name: "Determine latest ${{ matrix.tool }} release"
+        run: |
+          {
+            printf 'result='
+            gh --repo "freckle/${{ matrix.tool }}" release view \
+              --json tagName \
+              --jq .tagName | sed 's/^v//'
+          } >>"$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ secrets.FRECKLE_AUTOMATION_GITHUB_TOKEN }}
+
+      - if: ${{ steps.current.outputs.result != steps.latest.outputs.result }}
+        run: |
+          printf '%s: current %s is out of date (%s => %s)\n' "$TOOL" "$INPUT" "$CURRENT" "$LATEST"
+          find . -type f -exec sed -i.$$.bak "s/$CURRENT/$LATEST/g" {} +
+          find . -type f -name "*.$$.bak" -delete
+        env:
+          TOOL: ${{ matrix.tool }}
+          INPUT: ${{ matrix.input }}
+          CURRENT: ${{ steps.current.outputs.result }}
+          LATEST: ${{ steps.latest.outputs.result }}
+
+      - uses: peter-evans/create-pull-request@v3
+        with:
+          # Use PAT so this will trigger test/lint on the created PR
+          token: ${{ secrets.FRECKLE_AUTOMATION_GITHUB_TOKEN }}
+          commit-message: |
+            Update ${{ matrix.input }} to latest ${{ matrix.tool }} release
+          title: |
+            Update ${{ matrix.input }} to latest ${{ matrix.tool }} release
