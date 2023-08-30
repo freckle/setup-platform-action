@@ -57,11 +57,12 @@ jobs:
           CURRENT: ${{ steps.current.outputs.result }}
           LATEST: ${{ steps.latest.outputs.result }}
 
-      - uses: peter-evans/create-pull-request@v3
+      - uses: peter-evans/create-pull-request@v5
         with:
           # Use PAT so this will trigger test/lint on the created PR
           token: ${{ secrets.FRECKLE_AUTOMATION_GITHUB_TOKEN }}
           base: main
+          branch: create-pull-request/bump-${{ matrix.tool }}
           commit-message: |
             Update ${{ matrix.input }} to latest ${{ matrix.tool }} release
           title: |
