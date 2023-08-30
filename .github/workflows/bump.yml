@@ -30,7 +30,7 @@ jobs:
 
       - id: current
         name: "Determine current ${{ matrix.input }} default"
-        uses: mikefarah/yq
+        uses: mikefarah/yq@v4.35.1
         with:
           cmd: yq ".inputs.${{ matrix.input }}.default" action.yml
 
