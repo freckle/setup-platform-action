@@ -1,29 +1,10 @@
 #!/usr/bin/env bash
-#
-# Bumps version and stackctl-version defaults to latest release. Requires:
-#
-# - yq: https://github.com/mikefarah/yq
-# - gh: https://cli.github.com/
-#
-###
-set -euo pipefail
+cat <<'EOM'
+This script has been removed. You should instead run the Bump workflow on GitHub
+to update these values and open the necessary pull requests:
 
-process() {
-  local repo=$1 input=$2 current latest
+https://github.com/freckle/setup-platform-action/actions/workflows/bump.yml
 
-  current=$(yq ".inputs.$input.default" action.yml)
-  latest=$(gh --repo "freckle/$repo" release view --json tagName --jq .tagName | sed 's/^v//')
+EOM
 
-  if [[ "$current" == "$latest" ]]; then
-    printf '%s: current %s is latest (%s)\n' "$repo" "$input" "$latest"
-    return
-  fi
-
-  printf '%s: current %s is out of date (%s => %s)\n' "$repo" "$input" "$current" "$latest"
-  echo "Replacing..."
-  find . -type f -exec sed -i.$$.bak "s/$current/$latest/g" {} +
-  find . -type f -name "*.$$.bak" -delete
-}
-
-process platform version
-process stackctl stackctl-version
+exit 1
