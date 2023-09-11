@@ -9,6 +9,9 @@ on:
     paths:
       - .github/workflows/bump.yml
 
+  # Manually triggerable
+  workflow_dispatch:
+
 jobs:
   bump:
     runs-on: ubuntu-latest
