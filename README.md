@@ -24,7 +24,7 @@ outside Freckle.
     # app-directory: my-app     # If in multi-app repository
     # environment: prod
     # resource: my-resource     # If in multi-resource app
-    # stackctl-version: 1.5.0.0
+    # stackctl-version: 1.5.0.1
 ```
 
 The action installs a `platform` executable, configures `PLATFORM_*` environment
