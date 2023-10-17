@@ -8,7 +8,7 @@ load /usr/lib/bats-assert/load
 
 @test "Stackctl version" {
   run stackctl version
-  assert_output "Stackctl v1.5.0.1"
+  assert_output "Stackctl v1.6.0.0"
 }
 
 @test "Logging ENV" {

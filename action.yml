@@ -34,7 +34,7 @@ inputs:
   stackctl-version:
     description: Stackctl version to install
     required: true
-    default: "1.5.0.1"
+    default: "1.6.0.0"
 
   stackctl-directory:
     description: Value to set as STACKCTL_DIRECTORY
