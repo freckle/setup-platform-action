@@ -61,7 +61,8 @@ jobs:
           CURRENT: ${{ steps.current.outputs.result }}
           LATEST: ${{ steps.latest.outputs.result }}
 
-      - name: Create Pull Request
+      - id: create-pr
+        name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
           # Use PAT so this will trigger test/lint on the created PR
@@ -72,3 +73,9 @@ jobs:
             Update ${{ matrix.input }} to latest ${{ matrix.tool }} release
           title: |
             Update ${{ matrix.input }} to latest ${{ matrix.tool }} release
+
+      - name: Set Pull Request to auto-merge
+        run: gh pr merge --auto "$PR" --rebase
+        env:
+          PR: ${{ steps.create-pr.outputs.pull-request-number }}
+          GH_TOKEN: ${{ github.token }}
