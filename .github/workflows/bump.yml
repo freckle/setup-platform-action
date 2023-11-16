@@ -50,6 +50,7 @@ jobs:
           GH_TOKEN: ${{ secrets.FRECKLE_AUTOMATION_GITHUB_TOKEN }}
 
       - if: ${{ steps.current.outputs.result != steps.latest.outputs.result }}
+        name: Replace version string in all source files
         run: |
           printf '%s: current %s is out of date (%s => %s)\n' "$TOOL" "$INPUT" "$CURRENT" "$LATEST"
           find . -type f -exec sed -i.$$.bak "s/$CURRENT/$LATEST/g" {} +
@@ -60,7 +61,8 @@ jobs:
           CURRENT: ${{ steps.current.outputs.result }}
           LATEST: ${{ steps.latest.outputs.result }}
 
-      - uses: peter-evans/create-pull-request@v5
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
         with:
           # Use PAT so this will trigger test/lint on the created PR
           token: ${{ secrets.FRECKLE_AUTOMATION_GITHUB_TOKEN }}
