@@ -3,7 +3,7 @@ load /usr/lib/bats-assert/load
 
 @test "PlatformCLI version" {
   run platform version
-  assert_output "PlatformCLI v3.2.1.0"
+  assert_output "PlatformCLI v3.2.1.1"
 }
 
 @test "Stackctl version" {
