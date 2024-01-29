@@ -65,7 +65,7 @@ runs:
         install --version | grep -Fq GNU
 
     - name: Install PlatformCLI
-      uses: pbrisbin/setup-tool-action@v1
+      uses: pbrisbin/setup-tool-action@v2
       with:
         name: platform
         version: ${{ inputs.version }}
@@ -76,7 +76,7 @@ runs:
         subdir: "{name}"
 
     - name: Install Stackctl
-      uses: pbrisbin/setup-tool-action@v1
+      uses: pbrisbin/setup-tool-action@v2
       with:
         name: stackctl
         version: ${{ inputs.stackctl-version }}
@@ -150,7 +150,7 @@ runs:
         echo "resource=$resource" >>"$GITHUB_OUTPUT"
 
     - name: Cache .platform/cache directory
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ${{ steps.set-cache.outputs.cache }}
         key: ${{ runner.os }}-${{ github.job }}-${{ steps.set-cache.outputs.resource }}-${{ steps.set-tag.outputs.tag }}
