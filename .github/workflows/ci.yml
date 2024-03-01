@@ -62,7 +62,7 @@ jobs:
           environment: dev
           resource: my-resource
           no-validate: "1"
-          stackctl-version: "1.1.4.0"
+          stackctl-version: "1.4.0.0"
       - uses: mig4/setup-bats@v1
         with:
           bats-version: 1.7.0
