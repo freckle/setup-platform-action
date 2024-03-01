@@ -1,14 +1,22 @@
 load /usr/lib/bats-support/load
 load /usr/lib/bats-assert/load
 
-@test "PlatformCLI version" {
-  run platform version
-  assert_output "PlatformCLI v3.2.2.2"
+latest_stackctl_release() {
+  curl --silent --show-error --fail https://api.github.com/repos/freckle/stackctl/releases |
+    jq '.[] | select(.draft|not) | select(.prerelease|not) | .tag_name' --raw-output |
+    head -n 1
 }
+
+# We won't test the default version for PlatformCLI because looking up the
+# expected value would require a token (unlike Stackctl).
+# @test "PlatformCLI version" {
+#   run platform version
+#   assert_output "PlatformCLI v3.2.2.2"
+# }
 
 @test "Stackctl version" {
   run stackctl version
-  assert_output "Stackctl v1.6.0.0"
+  assert_output "Stackctl $(latest_stackctl_release)"
 }
 
 @test "Logging ENV" {
