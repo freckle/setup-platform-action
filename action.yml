@@ -3,35 +3,53 @@ description: Install and configure PlatformCLI and Stackctl
 
 inputs:
   version:
-    description: Version of Platform CLI to install
+    description: |
+      The version of PlatformCLI to install. Do not include the `v` prefix here.
+      The default is to lookup the latest release. We recommend using this
+      default, along with specifying a `required_version` constraint (such as
+      `=~ 3`) in your `.platform.yaml`.
     required: false
 
   token:
-    description: GitHub Token with access to freckle/platform repository
+    description: |
+      A GitHub access token with rights to fetch the private PlatformCLI release
+      artifacts. There is an Organization-level secret for `freckle`
+      repositories.
     required: true
 
   app-directory:
-    description: Value to set as PLATFORM_APP_DIRECTORY
+    description: |
+      If present, this will be set as `PLATFORM_APP_DIRECTORY` for the remainder
+      of the workflow. For details on what this affects, see `platform(1)`.
     required: true
     default: ""
 
   environment:
-    description: Value to set as PLATFORM_ENVIRONMENT
+    description: |
+      If present, this will be set as `PLATFORM_ENVIRONMENT` for the remainder
+      of the workflow. For details on what this affects, see `platform(1)`.
     required: true
     default: ""
 
   resource:
-    description: Value to set as PLATFORM_RESOURCE
+    description: |
+      If present, this will be set as `PLATFORM_RESOURCE` for the remainder of
+      the workflow. For details on what this affects, see `platform(1)`.
     required: true
     default: ""
 
   no-validate:
-    description: Value to set as PLATFORM_NO_VALIDATE
+    description: |
+      If present, this will be set as `PLATFORM_NO_VALIDATE` for the remainder
+      of the workflow. For details on what this affects, see `platform(1)`.
     required: true
     default: ""
 
   stackctl-version:
-    description: Stackctl version to install
+    description: |
+      The version of Stackctl to install. Do not include the `v` prefix here.
+      The default will change over time, and is meant to be kept up with latest
+      as best we can.
     required: false
 
   stackctl-directory:
@@ -47,8 +65,18 @@ inputs:
 outputs:
   tag:
     value: ${{ steps.set-tag.outputs.tag }}
+    description: |
+      A consistent, source-specific value that should be used throughout
+      build/push/deploy actions. It's currently the head sha for `pull_request`
+      events, the "after" sha `push` events, and `github.sha` for all other
+      events
+
   cache:
     value: ${{ steps.set-cache.outputs.cache }}
+    description: |
+      Path to the `.platform/cache` directory, for which we've setup an
+      `actions/cache` step. This output is only useful if in a multi-app
+      repository.
 
 runs:
   using: composite
