@@ -1,0 +1,12 @@
+{
+  "name": "setup-platform-action",
+  "version": "0.0.0",
+  "description": "This file only exists to support installing build tools",
+  "scripts": {
+    "readme": "npx action-docs -u && prettier --write README.md"
+  },
+  "devDependencies": {
+    "action-docs": "^2.1.0",
+    "prettier": "^3.2.4"
+  }
+}

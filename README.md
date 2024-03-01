@@ -84,49 +84,36 @@ you can do things like post changeset details to your PR:
     body-path: /tmp/changes.md
 ```
 
+<!-- action-docs-inputs action="action.yml" -->
+
 ## Inputs
 
-- **token**: a GitHub access token with rights to fetch the private PlatformCLI
-  release artifacts. There is an Organization-level secret for `freckle`
-  repositories.
+| name                 | description                                                                                                                                                                                                                                                                                                  | required | default           |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------- | ----------------- |
+| `version`            | <p>The version of PlatformCLI to install. Do not include the <code>v</code> prefix here. The default is to lookup the latest release. We recommend using this default, along with specifying a <code>required_version</code> constraint (such as <code>=~ 3</code>) in your <code>.platform.yaml</code>.</p> | `false`  | `""`              |
+| `token`              | <p>A GitHub access token with rights to fetch the private PlatformCLI release artifacts. There is an Organization-level secret for <code>freckle</code> repositories.</p>                                                                                                                                    | `true`   | `""`              |
+| `app-directory`      | <p>If present, this will be set as <code>PLATFORM_APP_DIRECTORY</code> for the remainder of the workflow. For details on what this affects, see <code>platform(1)</code>.</p>                                                                                                                                | `true`   | `""`              |
+| `environment`        | <p>If present, this will be set as <code>PLATFORM_ENVIRONMENT</code> for the remainder of the workflow. For details on what this affects, see <code>platform(1)</code>.</p>                                                                                                                                  | `true`   | `""`              |
+| `resource`           | <p>If present, this will be set as <code>PLATFORM_RESOURCE</code> for the remainder of the workflow. For details on what this affects, see <code>platform(1)</code>.</p>                                                                                                                                     | `true`   | `""`              |
+| `no-validate`        | <p>If present, this will be set as <code>PLATFORM_NO_VALIDATE</code> for the remainder of the workflow. For details on what this affects, see <code>platform(1)</code>.</p>                                                                                                                                  | `true`   | `""`              |
+| `stackctl-version`   |                                                                                                                                                                                                                                                                                                              | `false`  | `""`              |
+| `stackctl-directory` | <p>Value to set as STACKCTL_DIRECTORY</p>                                                                                                                                                                                                                                                                    | `true`   | `.platform/specs` |
+| `stackctl-filter`    | <p>Value to set as STACKCTL_FILTER</p>                                                                                                                                                                                                                                                                       | `true`   | `""`              |
 
-- **version**: the version of PlatformCLI to install. Do not include the `v`
-  prefix here. The default is to lookup the latest release. We recommend using
-  this default, along with specifying a `required_version` constraint (such as
-  `=~ 3`) in your `.platform.yaml`.
-
-- **app-directory**: if present, this will be set as `PLATFORM_APP_DIRECTORY`
-  for the remainder of the workflow. For details on what this affects, see
-  `platform(1)`.
-
-- **environment**: if present, this will be set as `PLATFORM_ENVIRONMENT` for
-  the remainder of the workflow. For details on what this affects, see
-  `platform(1)`.
-
-- **resource**: if present, this will be set as `PLATFORM_RESOURCE` for the
-  remainder of the workflow. For details on what this affects, see
-  `platform(1)`.
-
-- **no-validate**: if present, this will be set as `PLATFORM_NO_VALIDATE` for
-  the remainder of the workflow. For details on what this affects, see
-  `platform(1)`.
-
-- **stackctl-version**: the version of Stackctl to install. Do not include the
-  `v` prefix here. The default will change over time, and is meant to be kept up
-  with latest as best we can.
-
-**NOTE**: depending on the version of PlatformCLI you install, not all
-environment-variable-based configurations may be supported. Please refer to the
-documentation for the version you're using.
+<!-- action-docs-inputs action="action.yml" -->
 
 ## Outputs
 
-- **tag**: a consistent, source-specific value that should be used throughout
-  build/push/deploy actions. It's currently the head sha for `pull_request`
-  events, the "after" sha `push` events, and `github.sha` for all other events
+| name    | description                                                                                                                                                                                                                                                       |
+| ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tag`   | <p>a consistent, source-specific value that should be used throughout build/push/deploy actions. It's currently the head sha for <code>pull_request</code> events, the "after" sha <code>push</code> events, and <code>github.sha</code> for all other events</p> |
+| `cache` | <p>path to the <code>.platform/cache</code> directory, for which we've setup an <code>actions/cache</code> step. This output is only useful if in a multi-app repository.</p>                                                                                     |
 
-- **cache**: path to the `.platform/cache` directory, for which we've setup an
-  `actions/cache` step. This output is only useful if in a multi-app repository.
+## Caveat
+
+Depending on the version of PlatformCLI you install, not all
+environment-variable-based configurations may be supported. Please refer to the
+documentation for the version you're using.
 
 ---
 
