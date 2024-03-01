@@ -4,8 +4,7 @@ description: Install and configure PlatformCLI and Stackctl
 inputs:
   version:
     description: Version of Platform CLI to install
-    required: true
-    default: "3.2.2.2"
+    required: false
 
   token:
     description: GitHub Token with access to freckle/platform repository
@@ -33,8 +32,7 @@ inputs:
 
   stackctl-version:
     description: Stackctl version to install
-    required: true
-    default: "1.6.0.0"
+    required: false
 
   stackctl-directory:
     description: Value to set as STACKCTL_DIRECTORY
@@ -64,11 +62,39 @@ runs:
         sudo ln -sf "$(which ginstall)" /usr/local/bin/install
         install --version | grep -Fq GNU
 
+    - id: prep
+      name: Determine latest PlatformCLI version
+      if: ${{ inputs.version == '' }}
+      shell: bash
+      run: |
+        curl \
+          --header "Authorization: Bearer ${{ inputs.token }}" \
+          --silent \
+          --show-error \
+          --fail https://api.github.com/repos/freckle/platform/releases |
+          jq '.[] | select(.draft|not) | select(.prerelease|not) | .tag_name' --raw-output |
+          head -n 1 |
+          sed 's/^v/version=/' >>"$GITHUB_OUTPUT"
+
+    - id: prep-stackctl
+      name: Determine latest Stackctl version
+      if: ${{ inputs.stackctl-version == '' }}
+      shell: bash
+      run: |
+        curl \
+          --header "Authorization: Bearer ${{ inputs.token }}" \
+          --silent \
+          --show-error \
+          --fail https://api.github.com/repos/freckle/stackctl/releases |
+          jq '.[] | select(.draft|not) | select(.prerelease|not) | .tag_name' --raw-output |
+          head -n 1 |
+          sed 's/^v/version=/' >>"$GITHUB_OUTPUT"
+
     - name: Install PlatformCLI
       uses: pbrisbin/setup-tool-action@v2
       with:
         name: platform
-        version: ${{ inputs.version }}
+        version: ${{ inputs.version || steps.prep.outputs.version }}
         url: "https://github.com/freckle/{name}/releases/download/v{version}/{name}-{arch}-{os}.{ext}"
         github-token: ${{ inputs.token }}
         arch: x86_64
@@ -79,7 +105,7 @@ runs:
       uses: pbrisbin/setup-tool-action@v2
       with:
         name: stackctl
-        version: ${{ inputs.stackctl-version }}
+        version: ${{ inputs.stackctl-version || steps.prep-stackctl.outputs.version }}
         url: "https://github.com/freckle/{name}/releases/download/v{version}/{name}-{arch}-{os}.{ext}"
         arch: x86_64
         os-darwin: osx

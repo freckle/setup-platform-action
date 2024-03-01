@@ -91,9 +91,9 @@ you can do things like post changeset details to your PR:
   repositories.
 
 - **version**: the version of PlatformCLI to install. Do not include the `v`
-  prefix here. The default will change over time, and is meant to be the latest
-  stable version. We recommend using this default, along with specifying a
-  `required_version` constraint (such as `=~ 3`) in your `.platform.yaml`.
+  prefix here. The default is to lookup the latest release. We recommend using
+  this default, along with specifying a `required_version` constraint (such as
+  `=~ 3`) in your `.platform.yaml`.
 
 - **app-directory**: if present, this will be set as `PLATFORM_APP_DIRECTORY`
   for the remainder of the workflow. For details on what this affects, see
