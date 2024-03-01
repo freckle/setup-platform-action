@@ -16,7 +16,7 @@ jobs:
     runs-on: ${{ matrix.runner }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./
         with:
           token: ${{ secrets.FRECKLE_AUTOMATION_GITHUB_TOKEN }}
@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - id: setup
         uses: ./
         with:
@@ -53,7 +53,7 @@ jobs:
       AWS_SECRET_ACCESS_KEY: x
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./
         with:
           token: ${{ secrets.FRECKLE_AUTOMATION_GITHUB_TOKEN }}
