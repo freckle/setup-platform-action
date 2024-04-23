@@ -28,6 +28,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - run: rm .platform.yaml # so it'll be downloaded
       - id: setup
         uses: ./
         with:
@@ -63,6 +64,7 @@ jobs:
           resource: my-resource
           no-validate: "1"
           stackctl-version: "1.4.0.0"
+          fetch-platform-yaml: false
       - uses: bats-core/bats-action@2.0.0
         with:
           support-path: /usr/lib/bats/bats-support
