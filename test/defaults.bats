@@ -1,5 +1,5 @@
-load /usr/lib/bats-support/load
-load /usr/lib/bats-assert/load
+bats_load_library bats-support
+bats_load_library bats-assert
 
 latest_stackctl_release() {
   curl --silent --show-error --fail https://api.github.com/repos/freckle/stackctl/releases |
