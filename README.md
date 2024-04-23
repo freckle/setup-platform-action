@@ -10,7 +10,7 @@ GitHub Action to install and configure our [PlatformCLI][platform] and
 repository, but the tooling it installs and uses is private. It is of no use
 outside Freckle.
 
-## Usage
+## Basic Usage
 
 ```yaml
 - id: setup
@@ -103,12 +103,98 @@ you can do things like post changeset details to your PR:
 
 <!-- action-docs-inputs action="action.yml" -->
 
+<!-- action-docs-outputs action="action.yml" -->
+
 ## Outputs
 
 | name    | description                                                                                                                                                                                                                                                       |
 | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `tag`   | <p>a consistent, source-specific value that should be used throughout build/push/deploy actions. It's currently the head sha for <code>pull_request</code> events, the "after" sha <code>push</code> events, and <code>github.sha</code> for all other events</p> |
-| `cache` | <p>path to the <code>.platform/cache</code> directory, for which we've setup an <code>actions/cache</code> step. This output is only useful if in a multi-app repository.</p>                                                                                     |
+| `tag`   | <p>A consistent, source-specific value that should be used throughout build/push/deploy actions. It's currently the head sha for <code>pull_request</code> events, the "after" sha <code>push</code> events, and <code>github.sha</code> for all other events</p> |
+| `cache` | <p>Path to the <code>.platform/cache</code> directory, for which we've setup an <code>actions/cache</code> step. This output is only useful if in a multi-app repository.</p>                                                                                     |
+
+<!-- action-docs-outputs action="action.yml" -->
+
+<!-- action-docs-usage action="action.yml" project="freckle/platform-setup-action" version="v7" -->
+
+## Usage
+
+```yaml
+- uses: freckle/platform-setup-action@v7
+  with:
+    version:
+    # The version of PlatformCLI to install. Do not include the `v` prefix here.
+    # The default is to lookup the latest release. We recommend using this
+    # default, along with specifying a `required_version` constraint (such as
+    # `=~ 3`) in your `.platform.yaml`.
+    #
+    # Required: false
+    # Default: ""
+
+    token:
+    # A GitHub access token with rights to fetch the private PlatformCLI release
+    # artifacts. There is an Organization-level secret for `freckle`
+    # repositories.
+    #
+    # Required: true
+    # Default: ""
+
+    app-directory:
+    # If present, this will be set as `PLATFORM_APP_DIRECTORY` for the remainder
+    # of the workflow. For details on what this affects, see `platform(1)`.
+    #
+    # Required: false
+    # Default: ""
+
+    environment:
+    # If present, this will be set as `PLATFORM_ENVIRONMENT` for the remainder
+    # of the workflow. For details on what this affects, see `platform(1)`.
+    #
+    # Required: false
+    # Default: ""
+
+    resource:
+    # If present, this will be set as `PLATFORM_RESOURCE` for the remainder of
+    # the workflow. For details on what this affects, see `platform(1)`.
+    #
+    # Required: false
+    # Default: ""
+
+    no-validate:
+    # If present, this will be set as `PLATFORM_NO_VALIDATE` for the remainder
+    # of the workflow. For details on what this affects, see `platform(1)`.
+    #
+    # Required: false
+    # Default: ""
+
+    stackctl-version:
+    # The version of Stackctl to install. Do not include the `v` prefix here.
+    # The default will change over time, and is meant to be kept up with latest
+    # as best we can.
+    #
+    # Required: false
+    # Default: ""
+
+    stackctl-directory:
+    # Value to set as STACKCTL_DIRECTORY
+    #
+    # Required: false
+    # Default: .platform/specs
+
+    stackctl-filter:
+    # Value to set as STACKCTL_FILTER
+    #
+    # Required: false
+    # Default: ""
+
+    fetch-platform-yaml:
+    # Automatically fetch .platform.yaml via GitHub API if not present. This can
+    # be useful to avoid a checkout if all your Job needs is this file.
+    #
+    # Required: false
+    # Default: true
+```
+
+<!-- action-docs-usage action="action.yml" project="freckle/platform-setup-action" version="v7" -->
 
 ## Caveat
 
