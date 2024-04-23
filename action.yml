@@ -82,19 +82,19 @@ runs:
   using: composite
   steps:
     - if: ${{ runner.os == 'macOS' }}
-      name: Replace BSD install with GNU install
       shell: bash
       run: |
+        # Replace BSD install with GNU install
         brew install coreutils
         sudo mkdir -p /usr/local/bin
         sudo ln -sf "$(which ginstall)" /usr/local/bin/install
         install --version | grep -Fq GNU
 
     - id: prep
-      name: Determine latest PlatformCLI version
       if: ${{ inputs.version == '' }}
       shell: bash
       run: |
+        # Determine latest PlatformCLI version
         curl \
           --header "Authorization: Bearer ${{ inputs.token }}" \
           --silent \
@@ -105,10 +105,10 @@ runs:
           sed 's/^v/version=/' >>"$GITHUB_OUTPUT"
 
     - id: prep-stackctl
-      name: Determine latest Stackctl version
       if: ${{ inputs.stackctl-version == '' }}
       shell: bash
       run: |
+        # Determine latest Stackctl version
         curl \
           --header "Authorization: Bearer ${{ inputs.token }}" \
           --silent \
@@ -139,9 +139,9 @@ runs:
         os-darwin: osx
         subdir: "{name}"
 
-    - name: Configure PlatformCLI and Stackctl ENV
-      shell: bash
+    - shell: bash
       run: |
+        # Configure PlatformCLI and Stackctl ENV
         {
           echo 'LOG_COLOR=always'
           echo 'LOG_DESTINATION=stderr'
@@ -183,18 +183,18 @@ runs:
     # > github.event.pull_request.head.sha instead.
     #
     - id: set-tag
-      name: Set tag output
       shell: bash
       run: |
+        # Set tag output
         tag=${{ github.event.pull_request.head.sha }}
         tag=${tag:-${{ github.event.after }}}
         tag=${tag:-${{ github.sha }}}
         echo "tag=$tag" >>"$GITHUB_OUTPUT"
 
     - id: set-cache
-      name: Set cache path output and resource
       shell: bash
       run: |
+        # Set cache path output and resource
         app=$PLATFORM_APP_DIRECTORY
         app=${app:-.}
         echo "cache=$app/.platform/cache" >>"$GITHUB_OUTPUT"
@@ -212,9 +212,9 @@ runs:
           ${{ runner.os }}-${{ github.job }}-${{ steps.set-cache.outputs.resource }}-
           ${{ runner.os }}-${{ github.job }}-
 
-    - name: Configure Slack notification ENV
-      shell: bash
+    - shell: bash
       run: |
+        # Configure Slack notification ENV
         title="Deploy"
 
         if [[ -n "$PLATFORM_APP_DIRECTORY" ]] && [[ -n "$PLATFORM_RESOURCE" ]]; then
@@ -237,10 +237,10 @@ runs:
         MSG_MINIMAL=actions url,commit
         EOM
 
-    - name: Download .platform.yaml if necessary
-      if: ${{ inputs.fetch-platform-yaml == 'true' }}
+    - if: ${{ inputs.fetch-platform-yaml == 'true' }}
       shell: bash
       run: |
+        # Download .platform.yaml if necessary
         if [[ -e "${PLATFORM_APP_DIRECTORY:-.}/.platform.yaml" ]]; then
           echo "Skipping: .platform.yaml exists"
           exit 0
