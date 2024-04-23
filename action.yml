@@ -21,29 +21,25 @@ inputs:
     description: |
       If present, this will be set as `PLATFORM_APP_DIRECTORY` for the remainder
       of the workflow. For details on what this affects, see `platform(1)`.
-    required: true
     default: ""
 
   environment:
     description: |
       If present, this will be set as `PLATFORM_ENVIRONMENT` for the remainder
       of the workflow. For details on what this affects, see `platform(1)`.
-    required: true
-    default: ""
+    required: false
 
   resource:
     description: |
       If present, this will be set as `PLATFORM_RESOURCE` for the remainder of
       the workflow. For details on what this affects, see `platform(1)`.
-    required: true
-    default: ""
+    required: false
 
   no-validate:
     description: |
       If present, this will be set as `PLATFORM_NO_VALIDATE` for the remainder
       of the workflow. For details on what this affects, see `platform(1)`.
-    required: true
-    default: ""
+    required: false
 
   stackctl-version:
     description: |
@@ -54,20 +50,17 @@ inputs:
 
   stackctl-directory:
     description: Value to set as STACKCTL_DIRECTORY
-    required: true
     default: .platform/specs
 
   stackctl-filter:
     description: Value to set as STACKCTL_FILTER
-    required: true
-    default: ""
+    required: false
 
   fetch-platform-yaml:
     description: |
       Automatically fetch .platform.yaml via GitHub API if not present. This can
       be useful to avoid a checkout if all your Job needs is this file.
-    required: true
-    default: true
+    default: "true"
 
 outputs:
   tag:
