@@ -18,14 +18,14 @@ inputs:
 
   github-app-id:
     description: |
-      If `token` is not provided, and this and `github-app-private-key` will be used
-      to generate one scoped to the platform and stackctl repositories.
+      Provide this (and `github-app-private-key`) instead of `token` to generate
+      and use one from the identified App.
     required: false
 
   github-app-private-key:
     description: |
-      If `token` is not provided, and this and `github-app-id` will be used to
-      generate one scoped to the platform and stackctl repositories.
+      Provide this (and `github-app-id`) instead of `token` to generate and use
+      one from the identified App.
     required: false
 
   app-directory:
@@ -55,8 +55,7 @@ inputs:
   stackctl-version:
     description: |
       The version of Stackctl to install. Do not include the `v` prefix here.
-      The default will change over time, and is meant to be kept up with latest
-      as best we can.
+      The default is to lookup the latest release.
     required: false
 
   stackctl-directory:
@@ -69,8 +68,9 @@ inputs:
 
   fetch-platform-yaml:
     description: |
-      Automatically fetch .platform.yaml via GitHub API if not present. This can
-      be useful to avoid a checkout if all your Job needs is this file.
+      Automatically fetch `.platform.yaml` via GitHub API if not present. This
+      can be useful to avoid a checkout if all your Job needs is this file. This
+      will always use `github.token`, regardless of our own `token` input.
     default: "true"
 
 outputs:
@@ -79,7 +79,7 @@ outputs:
     description: |
       A consistent, source-specific value that should be used throughout
       build/push/deploy actions. It's currently the head sha for `pull_request`
-      events, the "after" sha `push` events, and `github.sha` for all other
+      events, the "after" sha for `push` events, and `github.sha` for all other
       events
 
   cache:

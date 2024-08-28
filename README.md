@@ -92,16 +92,16 @@ you can do things like post changeset details to your PR:
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------- | ----------------- |
 | `version`                | <p>The version of PlatformCLI to install. Do not include the <code>v</code> prefix here. The default is to lookup the latest release. We recommend using this default, along with specifying a <code>required_version</code> constraint (such as <code>=~ 3</code>) in your <code>.platform.yaml</code>.</p> | `false`  | `""`              |
 | `token`                  | <p>A GitHub access token with rights to fetch the private PlatformCLI release artifacts. Either this or <code>github-app-{id,private-key}</code> must be given.</p>                                                                                                                                          | `false`  | `""`              |
-| `github-app-id`          | <p>If <code>token</code> is not provided, and this and <code>github-app-private-key</code> will be used to generate one scoped to the platform and stackctl repositories.</p>                                                                                                                                | `false`  | `""`              |
-| `github-app-private-key` | <p>If <code>token</code> is not provided, and this and <code>github-app-id</code> will be used to generate one scoped to the platform and stackctl repositories.</p>                                                                                                                                         | `false`  | `""`              |
+| `github-app-id`          | <p>Provide this (and <code>github-app-private-key</code>) instead of <code>token</code> to generate and use one from the identified App.</p>                                                                                                                                                                 | `false`  | `""`              |
+| `github-app-private-key` | <p>Provide this (and <code>github-app-id</code>) instead of <code>token</code> to generate and use one from the identified App.</p>                                                                                                                                                                          | `false`  | `""`              |
 | `app-directory`          | <p>If present, this will be set as <code>PLATFORM_APP_DIRECTORY</code> for the remainder of the workflow. For details on what this affects, see <code>platform(1)</code>.</p>                                                                                                                                | `false`  | `""`              |
 | `environment`            | <p>If present, this will be set as <code>PLATFORM_ENVIRONMENT</code> for the remainder of the workflow. For details on what this affects, see <code>platform(1)</code>.</p>                                                                                                                                  | `false`  | `""`              |
 | `resource`               | <p>If present, this will be set as <code>PLATFORM_RESOURCE</code> for the remainder of the workflow. For details on what this affects, see <code>platform(1)</code>.</p>                                                                                                                                     | `false`  | `""`              |
 | `no-validate`            | <p>If present, this will be set as <code>PLATFORM_NO_VALIDATE</code> for the remainder of the workflow. For details on what this affects, see <code>platform(1)</code>.</p>                                                                                                                                  | `false`  | `""`              |
-| `stackctl-version`       | <p>The version of Stackctl to install. Do not include the <code>v</code> prefix here. The default will change over time, and is meant to be kept up with latest as best we can.</p>                                                                                                                          | `false`  | `""`              |
+| `stackctl-version`       | <p>The version of Stackctl to install. Do not include the <code>v</code> prefix here. The default is to lookup the latest release.</p>                                                                                                                                                                       | `false`  | `""`              |
 | `stackctl-directory`     | <p>Value to set as STACKCTL_DIRECTORY</p>                                                                                                                                                                                                                                                                    | `false`  | `.platform/specs` |
 | `stackctl-filter`        | <p>Value to set as STACKCTL_FILTER</p>                                                                                                                                                                                                                                                                       | `false`  | `""`              |
-| `fetch-platform-yaml`    | <p>Automatically fetch .platform.yaml via GitHub API if not present. This can be useful to avoid a checkout if all your Job needs is this file.</p>                                                                                                                                                          | `false`  | `true`            |
+| `fetch-platform-yaml`    | <p>Automatically fetch <code>.platform.yaml</code> via GitHub API if not present. This can be useful to avoid a checkout if all your Job needs is this file. This will always use <code>github.token</code>, regardless of our own <code>token</code> input.</p>                                             | `false`  | `true`            |
 
 <!-- action-docs-inputs action="action.yml" -->
 
@@ -109,10 +109,10 @@ you can do things like post changeset details to your PR:
 
 ## Outputs
 
-| name    | description                                                                                                                                                                                                                                                       |
-| ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `tag`   | <p>A consistent, source-specific value that should be used throughout build/push/deploy actions. It's currently the head sha for <code>pull_request</code> events, the "after" sha <code>push</code> events, and <code>github.sha</code> for all other events</p> |
-| `cache` | <p>Path to the <code>.platform/cache</code> directory, for which we've setup an <code>actions/cache</code> step. This output is only useful if in a multi-app repository.</p>                                                                                     |
+| name    | description                                                                                                                                                                                                                                                           |
+| ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tag`   | <p>A consistent, source-specific value that should be used throughout build/push/deploy actions. It's currently the head sha for <code>pull_request</code> events, the "after" sha for <code>push</code> events, and <code>github.sha</code> for all other events</p> |
+| `cache` | <p>Path to the <code>.platform/cache</code> directory, for which we've setup an <code>actions/cache</code> step. This output is only useful if in a multi-app repository.</p>                                                                                         |
 
 <!-- action-docs-outputs action="action.yml" -->
 
@@ -140,15 +140,15 @@ you can do things like post changeset details to your PR:
     # Default: ""
 
     github-app-id:
-    # If `token` is not provided, and this and `github-app-private-key` will be used
-    # to generate one scoped to the platform and stackctl repositories.
+    # Provide this (and `github-app-private-key`) instead of `token` to generate
+    # and use one from the identified App.
     #
     # Required: false
     # Default: ""
 
     github-app-private-key:
-    # If `token` is not provided, and this and `github-app-id` will be used to
-    # generate one scoped to the platform and stackctl repositories.
+    # Provide this (and `github-app-id`) instead of `token` to generate and use
+    # one from the identified App.
     #
     # Required: false
     # Default: ""
@@ -183,8 +183,7 @@ you can do things like post changeset details to your PR:
 
     stackctl-version:
     # The version of Stackctl to install. Do not include the `v` prefix here.
-    # The default will change over time, and is meant to be kept up with latest
-    # as best we can.
+    # The default is to lookup the latest release.
     #
     # Required: false
     # Default: ""
@@ -202,8 +201,9 @@ you can do things like post changeset details to your PR:
     # Default: ""
 
     fetch-platform-yaml:
-    # Automatically fetch .platform.yaml via GitHub API if not present. This can
-    # be useful to avoid a checkout if all your Job needs is this file.
+    # Automatically fetch `.platform.yaml` via GitHub API if not present. This
+    # can be useful to avoid a checkout if all your Job needs is this file. This
+    # will always use `github.token`, regardless of our own `token` input.
     #
     # Required: false
     # Default: true
