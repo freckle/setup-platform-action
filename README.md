@@ -88,18 +88,20 @@ you can do things like post changeset details to your PR:
 
 ## Inputs
 
-| name                  | description                                                                                                                                                                                                                                                                                                  | required | default           |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------- | ----------------- |
-| `version`             | <p>The version of PlatformCLI to install. Do not include the <code>v</code> prefix here. The default is to lookup the latest release. We recommend using this default, along with specifying a <code>required_version</code> constraint (such as <code>=~ 3</code>) in your <code>.platform.yaml</code>.</p> | `false`  | `""`              |
-| `token`               | <p>A GitHub access token with rights to fetch the private PlatformCLI release artifacts. There is an Organization-level secret for <code>freckle</code> repositories.</p>                                                                                                                                    | `true`   | `""`              |
-| `app-directory`       | <p>If present, this will be set as <code>PLATFORM_APP_DIRECTORY</code> for the remainder of the workflow. For details on what this affects, see <code>platform(1)</code>.</p>                                                                                                                                | `false`  | `""`              |
-| `environment`         | <p>If present, this will be set as <code>PLATFORM_ENVIRONMENT</code> for the remainder of the workflow. For details on what this affects, see <code>platform(1)</code>.</p>                                                                                                                                  | `false`  | `""`              |
-| `resource`            | <p>If present, this will be set as <code>PLATFORM_RESOURCE</code> for the remainder of the workflow. For details on what this affects, see <code>platform(1)</code>.</p>                                                                                                                                     | `false`  | `""`              |
-| `no-validate`         | <p>If present, this will be set as <code>PLATFORM_NO_VALIDATE</code> for the remainder of the workflow. For details on what this affects, see <code>platform(1)</code>.</p>                                                                                                                                  | `false`  | `""`              |
-| `stackctl-version`    | <p>The version of Stackctl to install. Do not include the <code>v</code> prefix here. The default will change over time, and is meant to be kept up with latest as best we can.</p>                                                                                                                          | `false`  | `""`              |
-| `stackctl-directory`  | <p>Value to set as STACKCTL_DIRECTORY</p>                                                                                                                                                                                                                                                                    | `false`  | `.platform/specs` |
-| `stackctl-filter`     | <p>Value to set as STACKCTL_FILTER</p>                                                                                                                                                                                                                                                                       | `false`  | `""`              |
-| `fetch-platform-yaml` | <p>Automatically fetch .platform.yaml via GitHub API if not present. This can be useful to avoid a checkout if all your Job needs is this file.</p>                                                                                                                                                          | `false`  | `true`            |
+| name                     | description                                                                                                                                                                                                                                                                                                  | required | default           |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------- | ----------------- |
+| `version`                | <p>The version of PlatformCLI to install. Do not include the <code>v</code> prefix here. The default is to lookup the latest release. We recommend using this default, along with specifying a <code>required_version</code> constraint (such as <code>=~ 3</code>) in your <code>.platform.yaml</code>.</p> | `false`  | `""`              |
+| `token`                  | <p>A GitHub access token with rights to fetch the private PlatformCLI release artifacts. Either this or <code>github-app-{id,private-key}</code> must be given.</p>                                                                                                                                          | `false`  | `""`              |
+| `github-app-id`          | <p>If <code>token</code> is not provided, and this and <code>github-app-private-key</code> will be used to generate one scoped to the platform and stackctl repositories.</p>                                                                                                                                | `false`  | `""`              |
+| `github-app-private-key` | <p>If <code>token</code> is not provided, and this and <code>github-app-id</code> will be used to generate one scoped to the platform and stackctl repositories.</p>                                                                                                                                         | `false`  | `""`              |
+| `app-directory`          | <p>If present, this will be set as <code>PLATFORM_APP_DIRECTORY</code> for the remainder of the workflow. For details on what this affects, see <code>platform(1)</code>.</p>                                                                                                                                | `false`  | `""`              |
+| `environment`            | <p>If present, this will be set as <code>PLATFORM_ENVIRONMENT</code> for the remainder of the workflow. For details on what this affects, see <code>platform(1)</code>.</p>                                                                                                                                  | `false`  | `""`              |
+| `resource`               | <p>If present, this will be set as <code>PLATFORM_RESOURCE</code> for the remainder of the workflow. For details on what this affects, see <code>platform(1)</code>.</p>                                                                                                                                     | `false`  | `""`              |
+| `no-validate`            | <p>If present, this will be set as <code>PLATFORM_NO_VALIDATE</code> for the remainder of the workflow. For details on what this affects, see <code>platform(1)</code>.</p>                                                                                                                                  | `false`  | `""`              |
+| `stackctl-version`       | <p>The version of Stackctl to install. Do not include the <code>v</code> prefix here. The default will change over time, and is meant to be kept up with latest as best we can.</p>                                                                                                                          | `false`  | `""`              |
+| `stackctl-directory`     | <p>Value to set as STACKCTL_DIRECTORY</p>                                                                                                                                                                                                                                                                    | `false`  | `.platform/specs` |
+| `stackctl-filter`        | <p>Value to set as STACKCTL_FILTER</p>                                                                                                                                                                                                                                                                       | `false`  | `""`              |
+| `fetch-platform-yaml`    | <p>Automatically fetch .platform.yaml via GitHub API if not present. This can be useful to avoid a checkout if all your Job needs is this file.</p>                                                                                                                                                          | `false`  | `true`            |
 
 <!-- action-docs-inputs action="action.yml" -->
 
@@ -132,10 +134,23 @@ you can do things like post changeset details to your PR:
 
     token:
     # A GitHub access token with rights to fetch the private PlatformCLI release
-    # artifacts. There is an Organization-level secret for `freckle`
-    # repositories.
+    # artifacts. Either this or `github-app-{id,private-key}` must be given.
     #
-    # Required: true
+    # Required: false
+    # Default: ""
+
+    github-app-id:
+    # If `token` is not provided, and this and `github-app-private-key` will be used
+    # to generate one scoped to the platform and stackctl repositories.
+    #
+    # Required: false
+    # Default: ""
+
+    github-app-private-key:
+    # If `token` is not provided, and this and `github-app-id` will be used to
+    # generate one scoped to the platform and stackctl repositories.
+    #
+    # Required: false
     # Default: ""
 
     app-directory:

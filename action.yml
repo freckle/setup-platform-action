@@ -13,9 +13,20 @@ inputs:
   token:
     description: |
       A GitHub access token with rights to fetch the private PlatformCLI release
-      artifacts. There is an Organization-level secret for `freckle`
-      repositories.
-    required: true
+      artifacts. Either this or `github-app-{id,private-key}` must be given.
+    required: false
+
+  github-app-id:
+    description: |
+      If `token` is not provided, and this and `github-app-private-key` will be used
+      to generate one scoped to the platform and stackctl repositories.
+    required: false
+
+  github-app-private-key:
+    description: |
+      If `token` is not provided, and this and `github-app-id` will be used to
+      generate one scoped to the platform and stackctl repositories.
+    required: false
 
   app-directory:
     description: |
@@ -81,6 +92,28 @@ outputs:
 runs:
   using: composite
   steps:
+    - if: ${{ !inputs.token && !(inputs.github-app-id && inputs.github-app-private-key) }}
+      shell: bash
+      run: |
+        # Validate token or github-app inputs
+        echo "Either token or github-app-id/private-key must be provided" >&2
+        exit 1
+
+    - id: app-token
+      if: ${{ !inputs.token }}
+      uses: actions/create-github-app-token@v1
+      with:
+        app-id: ${{ inputs.github-app-id }}
+        private-key: ${{ inputs.github-app-private-key }}
+        repositories: platform,stackctl
+
+    - id: token
+      shell: bash
+      run: |
+        # Choose token output
+        token=${{ inputs.token || steps.app-token.outputs.token }}
+        echo "token=$token" >>"$GITHUB_OUTPUT"
+
     - if: ${{ runner.os == 'macOS' }}
       shell: bash
       run: |
@@ -96,7 +129,7 @@ runs:
       run: |
         # Determine latest PlatformCLI version
         curl \
-          --header "Authorization: Bearer ${{ inputs.token }}" \
+          --header "Authorization: Bearer ${{ steps.token.outputs.token }}" \
           --silent \
           --show-error \
           --fail https://api.github.com/repos/freckle/platform/releases |
@@ -110,7 +143,7 @@ runs:
       run: |
         # Determine latest Stackctl version
         curl \
-          --header "Authorization: Bearer ${{ inputs.token }}" \
+          --header "Authorization: Bearer ${{ steps.token.outputs.token }}" \
           --silent \
           --show-error \
           --fail https://api.github.com/repos/freckle/stackctl/releases |
@@ -124,7 +157,7 @@ runs:
         name: platform
         version: ${{ inputs.version || steps.prep.outputs.version }}
         url: "https://github.com/freckle/{name}/releases/download/v{version}/{name}-{arch}-{os}.{ext}"
-        github-token: ${{ inputs.token }}
+        github-token: ${{ steps.token.outputs.token }}
         arch: x86_64
         os-darwin: osx
         subdir: "{name}"
