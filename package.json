@@ -6,7 +6,7 @@
     "readme": "npx action-docs -u && prettier --write README.md"
   },
   "devDependencies": {
-    "action-docs": "^2.4.2",
+    "action-docs": "^2.4.3",
     "prettier": "^3.3.3"
   }
 }
