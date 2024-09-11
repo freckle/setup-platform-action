@@ -92,8 +92,9 @@ you can do things like post changeset details to your PR:
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------- | ----------------- |
 | `version`                | <p>The version of PlatformCLI to install. Do not include the <code>v</code> prefix here. The default is to lookup the latest release. We recommend using this default, along with specifying a <code>required_version</code> constraint (such as <code>=~ 3</code>) in your <code>.platform.yaml</code>.</p> | `false`  | `""`              |
 | `token`                  | <p>A GitHub access token with rights to fetch the private PlatformCLI release artifacts. Either this or <code>github-app-{id,private-key}</code> must be given.</p>                                                                                                                                          | `false`  | `""`              |
-| `github-app-id`          | <p>Provide this (and <code>github-app-private-key</code>) instead of <code>token</code> to generate and use one from the identified App.</p>                                                                                                                                                                 | `false`  | `""`              |
-| `github-app-private-key` | <p>Provide this (and <code>github-app-id</code>) instead of <code>token</code> to generate and use one from the identified App.</p>                                                                                                                                                                          | `false`  | `""`              |
+| `github-app-id`          | <p>Provide this (and <code>github-private-key</code>) instead of <code>token</code> to generate and use one from the identified App.</p>                                                                                                                                                                     | `false`  | `""`              |
+| `github-private-key`     | <p>Provide this (and <code>github-app-id</code>) instead of <code>token</code> to generate and use one from the identified App.</p>                                                                                                                                                                          | `false`  | `""`              |
+| `github-app-private-key` | <p>Deprecated, use github-private-key</p>                                                                                                                                                                                                                                                                    | `false`  | `""`              |
 | `app-directory`          | <p>If present, this will be set as <code>PLATFORM_APP_DIRECTORY</code> for the remainder of the workflow. For details on what this affects, see <code>platform(1)</code>.</p>                                                                                                                                | `false`  | `""`              |
 | `environment`            | <p>If present, this will be set as <code>PLATFORM_ENVIRONMENT</code> for the remainder of the workflow. For details on what this affects, see <code>platform(1)</code>.</p>                                                                                                                                  | `false`  | `""`              |
 | `resource`               | <p>If present, this will be set as <code>PLATFORM_RESOURCE</code> for the remainder of the workflow. For details on what this affects, see <code>platform(1)</code>.</p>                                                                                                                                     | `false`  | `""`              |
@@ -140,15 +141,21 @@ you can do things like post changeset details to your PR:
     # Default: ""
 
     github-app-id:
-    # Provide this (and `github-app-private-key`) instead of `token` to generate
+    # Provide this (and `github-private-key`) instead of `token` to generate
     # and use one from the identified App.
     #
     # Required: false
     # Default: ""
 
-    github-app-private-key:
+    github-private-key:
     # Provide this (and `github-app-id`) instead of `token` to generate and use
     # one from the identified App.
+    #
+    # Required: false
+    # Default: ""
+
+    github-app-private-key:
+    # Deprecated, use github-private-key
     #
     # Required: false
     # Default: ""
