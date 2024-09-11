@@ -20,7 +20,7 @@ jobs:
       - uses: ./
         with:
           github-app-id: ${{ vars.FRECKLE_AUTOMATION_APP_ID }}
-          github-app-private-key: ${{ secrets.FRECKLE_AUTOMATION_APP_PRIVATE_KEY }}
+          github-private-key: ${{ secrets.FRECKLE_AUTOMATION_PRIVATE_KEY }}
       - run: platform version
       - run: stackctl version
 
@@ -34,7 +34,7 @@ jobs:
         uses: ./
         with:
           github-app-id: ${{ vars.FRECKLE_AUTOMATION_APP_ID }}
-          github-app-private-key: ${{ secrets.FRECKLE_AUTOMATION_APP_PRIVATE_KEY }}
+          github-private-key: ${{ secrets.FRECKLE_AUTOMATION_PRIVATE_KEY }}
       - uses: bats-core/bats-action@2.0.0
         with:
           support-path: /usr/lib/bats/bats-support
@@ -61,7 +61,7 @@ jobs:
         uses: ./
         with:
           github-app-id: ${{ vars.FRECKLE_AUTOMATION_APP_ID }}
-          github-app-private-key: ${{ secrets.FRECKLE_AUTOMATION_APP_PRIVATE_KEY }}
+          github-private-key: ${{ secrets.FRECKLE_AUTOMATION_PRIVATE_KEY }}
           version: "2.1.0.0"
           app-directory: my-app
           environment: dev

@@ -18,14 +18,18 @@ inputs:
 
   github-app-id:
     description: |
-      Provide this (and `github-app-private-key`) instead of `token` to generate
+      Provide this (and `github-private-key`) instead of `token` to generate
       and use one from the identified App.
     required: false
 
-  github-app-private-key:
+  github-private-key:
     description: |
       Provide this (and `github-app-id`) instead of `token` to generate and use
       one from the identified App.
+    required: false
+
+  github-app-private-key:
+    description: Deprecated, use github-private-key
     required: false
 
   app-directory:
@@ -92,7 +96,7 @@ outputs:
 runs:
   using: composite
   steps:
-    - if: ${{ !inputs.token && !(inputs.github-app-id && inputs.github-app-private-key) }}
+    - if: ${{ !inputs.token && !(inputs.github-app-id && (inputs.github-private-key || inputs.github-app-private-key)) }}
       shell: bash
       run: |
         # Validate token or github-app inputs
@@ -104,7 +108,7 @@ runs:
       uses: actions/create-github-app-token@v1
       with:
         app-id: ${{ inputs.github-app-id }}
-        private-key: ${{ inputs.github-app-private-key }}
+        private-key: ${{ inputs.github-private-key || inputs.github-app-private-key }}
         repositories: platform,stackctl
 
     - id: token
