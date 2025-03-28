@@ -35,7 +35,7 @@ jobs:
         with:
           github-app-id: ${{ vars.FRECKLE_AUTOMATION_APP_ID }}
           github-private-key: ${{ secrets.FRECKLE_AUTOMATION_PRIVATE_KEY }}
-      - uses: bats-core/bats-action@3.0.0
+      - uses: bats-core/bats-action@3.0.1
         with:
           support-path: /usr/lib/bats/bats-support
           assert-path: /usr/lib/bats/bats-assert
@@ -69,7 +69,7 @@ jobs:
           no-validate: "1"
           stackctl-version: "1.4.0.0"
           fetch-platform-yaml: false
-      - uses: bats-core/bats-action@3.0.0
+      - uses: bats-core/bats-action@3.0.1
         with:
           support-path: /usr/lib/bats/bats-support
           assert-path: /usr/lib/bats/bats-assert
