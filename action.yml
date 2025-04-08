@@ -105,7 +105,7 @@ runs:
 
     - id: app-token
       if: ${{ !inputs.token }}
-      uses: actions/create-github-app-token@v1
+      uses: actions/create-github-app-token@v2
       with:
         app-id: ${{ inputs.github-app-id }}
         private-key: ${{ inputs.github-private-key || inputs.github-app-private-key }}
