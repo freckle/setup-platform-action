@@ -241,7 +241,7 @@ runs:
         echo "resource=$resource" >>"$GITHUB_OUTPUT"
 
     - name: Cache .platform/cache directory
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ${{ steps.set-cache.outputs.cache }}
         key: ${{ runner.os }}-${{ github.job }}-${{ steps.set-cache.outputs.resource }}-${{ steps.set-tag.outputs.tag }}
