@@ -224,6 +224,26 @@ Depending on the version of PlatformCLI you install, not all
 environment-variable-based configurations may be supported. Please refer to the
 documentation for the version you're using.
 
+## Action Versioning
+
+Versioned tags will exist, such as `v1.0.0` and `v2.1.1`. Tags will also exist
+for each major version, such as `v1` or `v2` and point to the newest version in
+that series.
+
+## Release
+
+To trigger a release (and update the `@v{major}` tag), merge a commit to `main`
+that follows [Conventional Commits][]. In short,
+
+- `fix:` to trigger a patch release,
+- `feat:` for minor, and
+- `<type>!:` or use a `BREAKING CHANGE:` trailer to bump major
+
+We don't enforce conventional commits generally (though you are free do so),
+it's only required if you want to trigger release.
+
+[conventional commits]: https://www.conventionalcommits.org/en/v1.0.0/#summary
+
 ---
 
 [LICENSE](./LICENSE)
